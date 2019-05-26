@@ -18,7 +18,6 @@ protected:
 
 private:
     SDL_Surface *_surface;
-    std::string _imagePath;
 };
 
 

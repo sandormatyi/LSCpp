@@ -43,32 +43,6 @@ SDL_Color interpolate(const SDL_Color &c1, const SDL_Color &c2, double i)
     return c;
 }
 
-void testColors()
-{
-    SDL_Color red{
-            .r = 255,
-            .g = 0,
-            .b = 0,
-            .a = 255};
-
-    SDL_Color green{
-            .r = 0,
-            .g = 255,
-            .b = 0,
-            .a = 255
-    };
-
-    SDL_Color c = interpolate(red, green, 0.5);
-    assert(c.r == 127);
-    assert(c.g == 127);
-    assert(c.b == 0);
-
-    c = interpolate(red, green, 0.75);
-    assert(c.r == 63);
-    assert(c.g == 191);
-    assert(c.b == 0);
-}
-
 void initRGB()
 {
     const int COLOR_NUMBER_6 = COLOR_NUMBER / 6;
@@ -120,7 +94,6 @@ void initRGB()
 
 void initColors()
 {
-    testColors();
 
     /* for (int i = 0; i < COLOR_NUMBER; ++i) {
          colors[i].r = interpolate(0xFF, 0x00, float(i)/(float)COLOR_NUMBER);
