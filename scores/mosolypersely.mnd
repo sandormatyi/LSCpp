@@ -1,0 +1,1434 @@
+title Mosolypersely
+bpm 145
+x -0.562202621523037
+y -0.642817149072775
+zoom 1000000000000000
+maxn 249
+-
+# BEATS START
+
+# Bar 1
+set save 1
+set render 1
+set blend 1
+set tracemode 3
+set fade 0.975
+change color 0 0 0 -100
+start color 50 40 15 0
+set resolution 252
+-
+-
+set resolution 1
+-
+-
+
+set resolution 254
+stop color
+-
+-
+set resolution 1
+-
+-
+
+set resolution 256
+-
+-
+-
+-
+
+set resolution 1
+-
+-
+-
+-
+
+set resolution 259
+-
+-
+set resolution 1
+-
+-
+
+set resolution 261
+-
+-
+set resolution 1
+-
+-
+
+set resolution 263
+-
+-
+-
+-
+
+set resolution 1
+-
+-
+set resolution 266
+-
+set resolution 1
+-
+
+# Dob + bassz + szöveg bejön
+
+# Bar 9
+change color 0 0 0 50
+set fade 0.875
+set zoom 18329560713118300
+set resolution 273
+start zoom 0.96
+-
+-
+-
+-
+
+-
+-
+-
+-
+
+-
+-
+-
+-
+
+-
+-
+-
+-
+
+# Bar 13
+-
+-
+-
+-
+
+-
+-
+-
+-
+
+-
+-
+-
+-
+
+-
+-
+-
+-
+
+# Bar 17
+start rotation 11.25
+-
+-
+-
+-
+
+stop rotation
+set rotation 45
+-
+-
+-
+-
+
+start rotation 11.25
+-
+-
+-
+-
+
+stop rotation
+set rotation 90
+-
+-
+-
+-
+
+# Bar 21
+start rotation 11.25
+-
+-
+-
+-
+
+stop rotation
+set rotation 135
+-
+-
+-
+-
+
+start rotation 11.25
+-
+-
+-
+-
+
+stop rotation
+set rotation 180
+-
+-
+-
+-
+
+# Bar 25
+start rotation 11.25
+-
+-
+-
+-
+
+stop rotation
+set rotation 225
+-
+-
+-
+-
+
+start rotation 11.25
+-
+-
+-
+-
+
+stop rotation
+set rotation 270
+-
+-
+-
+-
+
+# Bar 29
+start rotation 11.25
+-
+-
+-
+-
+
+stop rotation
+set rotation 315
+-
+-
+-
+-
+
+start rotation 11.25
+-
+-
+-
+-
+
+stop rotation
+set rotation 0
+-
+-
+-
+-
+
+# Bar 33
+start rotation -11.25
+-
+-
+-
+-
+
+stop rotation
+set rotation -45
+-
+-
+-
+-
+
+start rotation -11.25
+-
+-
+-
+-
+
+stop rotation
+set rotation -90
+-
+-
+-
+-
+
+# Bar 37
+start rotation -11.25
+-
+-
+-
+-
+
+stop rotation
+set rotation -135
+-
+-
+-
+-
+
+start rotation -11.25
+-
+-
+-
+-
+
+stop rotation
+set rotation -180
+-
+-
+-
+-
+
+# Bar 41
+start color 2 0 1 0
+start rotation -11.25
+-
+-
+start rotation 6.125
+-
+-
+
+start rotation -11.25
+-
+-
+start rotation 6.125
+-
+-
+
+start rotation -11.25
+-
+-
+start rotation 6.125
+-
+-
+
+start rotation -11.25
+-
+-
+start rotation 6.125
+-
+-
+
+start rotation -11.25
+-
+-
+start rotation 6.125
+-
+-
+
+start rotation -11.25
+-
+-
+start rotation 6.125
+-
+-
+
+start rotation -11.25
+-
+-
+start rotation 6.125
+-
+-
+
+start rotation -11.25
+-
+-
+start rotation 6.125
+-
+-
+
+# Bar 49
+start zoom 0.95
+start rotation 6.125
+start color 3 4 5 0
+-
+-
+-
+-
+
+start zoom 0.9
+-
+-
+-
+-
+
+start zoom 0.8
+-
+-
+-
+-
+
+start zoom 0.7
+-
+-
+-
+-
+
+start zoom 0.6
+-
+-
+-
+-
+
+start zoom 0.5
+-
+-
+-
+-
+
+# Bar 55
+stop color
+start resolution 8
+change color 9 2 6 0
+set blend 2
+start zoom 2
+-
+set blend 1
+-
+set blend 2
+start zoom 0.8
+-
+set blend 1
+-
+
+change color 9 2 6 0
+set blend 2
+start zoom 2
+-
+set blend 1
+-
+set blend 2
+start zoom 0.8
+-
+set blend 1
+-
+
+change color 9 2 6 0
+set blend 2
+start zoom 2
+-
+set blend 1
+-
+set blend 2
+start zoom 0.8
+-
+set blend 1
+-
+
+change color 9 2 6 0
+set blend 2
+start zoom 2
+-
+set blend 1
+-
+set blend 2
+start zoom 0.8
+-
+set blend 1
+-
+
+change color 9 2 6 0
+set blend 2
+start zoom 2
+-
+set blend 1
+-
+set blend 2
+start zoom 0.8
+-
+set blend 1
+-
+
+change color 9 2 6 0
+set blend 2
+start zoom 2
+-
+set blend 1
+-
+set blend 2
+start zoom 0.8
+-
+set blend 1
+-
+
+change color 9 2 6 0
+set blend 2
+start zoom 2
+-
+set blend 1
+-
+set blend 2
+start zoom 0.8
+-
+set blend 1
+-
+
+change color 9 2 6 0
+set blend 2
+start zoom 2
+-
+set blend 1
+-
+set blend 2
+start zoom 0.8
+-
+set blend 1
+-
+
+# Bar 63
+start color 1 0 0 0
+set blend 2
+start zoom 1.75
+-
+set blend 1
+-
+set blend 2
+start zoom 0.8
+-
+set blend 1
+-
+
+set blend 2
+start zoom 1.75
+-
+set blend 1
+-
+set blend 2
+start zoom 0.8
+-
+set blend 1
+-
+
+set blend 2
+start zoom 1.75
+-
+set blend 1
+-
+set blend 2
+start zoom 0.8
+-
+set blend 1
+-
+
+set blend 2
+start zoom 1.75
+-
+set blend 1
+-
+set blend 2
+start zoom 0.8
+-
+set blend 1
+-
+
+set blend 2
+start zoom 1.75
+-
+set blend 1
+-
+set blend 2
+start zoom 0.8
+-
+set blend 1
+-
+
+set blend 2
+start zoom 1.75
+-
+set blend 1
+-
+set blend 2
+start zoom 0.8
+-
+set blend 1
+-
+
+set blend 2
+start zoom 1.75
+-
+set blend 1
+-
+set blend 2
+start zoom 0.8
+-
+set blend 1
+-
+
+set blend 2
+start zoom 1.75
+-
+set blend 1
+-
+set blend 2
+start zoom 0.8
+-
+set blend 1
+-
+
+# CSAK GITÁR
+
+# Bar 71
+set blend 1
+set tracemode 3
+set fade 0.95
+stop resolution
+stop color
+set resolution 266
+start rotation -6.125
+start resolution -8
+start zoom 0.9
+change color 0 0 0 -100
+-
+-
+start resolution 8
+stop zoom
+-
+-
+
+start resolution -8
+start zoom 0.9
+-
+-
+start resolution 8
+stop zoom
+-
+-
+
+start resolution -8
+start zoom 0.9
+-
+-
+start resolution 8
+stop zoom
+-
+-
+
+start resolution -8
+start zoom 0.9
+-
+-
+start resolution 8
+stop zoom
+-
+-
+
+start resolution -8
+start zoom 0.9
+-
+-
+start resolution 8
+stop zoom
+-
+-
+
+start resolution -8
+start zoom 0.9
+-
+-
+start resolution 8
+stop zoom
+-
+-
+
+start resolution -8
+start zoom 0.9
+-
+-
+start resolution 8
+stop zoom
+-
+-
+
+start resolution -8
+start zoom 0.9
+-
+-
+start zoom 0.5
+start resolution -8
+set fade 0.9
+-
+-
+
+# ZÚZÁS
+log ZÚZÁS
+
+# Bar 79
+stop zoom
+stop resolution
+change color 0 0 0 100
+set fade 0.875
+set position 0.258768527418069 -0.0013340335833006
+set zoom 10000000000000000
+set resolution 1500
+start rotation 6.125
+start color 1 0 0 0
+
+start zoom 0.6
+set blend 2
+-
+set blend 1
+-
+set blend 2
+-
+set blend 1
+-
+
+set blend 2
+-
+set blend 1
+-
+set blend 2
+-
+set blend 1
+-
+
+set blend 2
+-
+set blend 1
+-
+set blend 2
+-
+set blend 1
+-
+
+set blend 2
+-
+set blend 1
+-
+set blend 2
+-
+set blend 1
+-
+
+set blend 2
+-
+set blend 1
+-
+set blend 2
+-
+set blend 1
+-
+
+set blend 2
+-
+set blend 1
+-
+set blend 2
+-
+set blend 1
+-
+
+set blend 2
+-
+set blend 1
+-
+set blend 2
+-
+set blend 1
+-
+
+set blend 1
+start resolution -400
+start zoom 0.5
+-
+-
+stop zoom
+stop rotation
+start resolution -200
+-
+-
+stop resolution
+
+
+# Bar 87
+
+start rotation 6.125
+set resolution 1500
+set tracemode 3
+start zoom 0.6
+set blend 2
+-
+set blend 1
+-
+set blend 2
+-
+set blend 1
+-
+
+set blend 2
+-
+set blend 1
+-
+set blend 2
+-
+set blend 1
+-
+
+set blend 2
+-
+set blend 1
+-
+set blend 2
+-
+set blend 1
+-
+
+set blend 2
+-
+set blend 1
+-
+set blend 2
+-
+set blend 1
+-
+
+set blend 2
+-
+set blend 1
+-
+set blend 2
+-
+set blend 1
+-
+
+set blend 2
+-
+set blend 1
+-
+set blend 2
+-
+set blend 1
+-
+
+set blend 2
+-
+set blend 1
+-
+set blend 2
+-
+set blend 1
+-
+
+set blend 2
+set tracemode 1
+start zoom 0.1
+-
+-
+-
+-
+
+# Bar 95 (Sírás)
+log SÍRÁS
+
+stop zoom
+stop rotation
+stop color
+set position 0.283585644741946 -0.0103161496807914
+set zoom 10000000000000000
+set resolution 1470
+set tracemode 3
+set fade 0.95
+start zoom 0.6
+set blend 2
+-
+-
+set blend 1
+-
+-
+
+set blend 2
+-
+-
+set blend 1
+-
+-
+
+set fade 0.875
+set blend 2
+-
+-
+set blend 1
+-
+-
+
+set blend 2
+-
+-
+set blend 1
+-
+-
+
+set blend 2
+start rotation 5.625
+-
+-
+set blend 1
+start rotation -5.625
+-
+-
+
+set blend 2
+start rotation 5.625
+-
+-
+set blend 1
+start rotation -5.625
+-
+-
+
+set blend 2
+start rotation 5.625
+-
+-
+set blend 1
+start rotation -5.625
+-
+-
+
+set blend 2
+start rotation 5.625
+-
+-
+set blend 1
+start rotation -5.625
+-
+-
+
+# Bar 103
+start zoom 0.5
+set blend 2
+start rotation 11.125
+-
+-
+set blend 1
+start rotation -11.125
+-
+-
+
+set blend 2
+start rotation 11.125
+-
+-
+set blend 1
+start rotation -11.125
+-
+-
+
+set blend 2
+start rotation 11.125
+-
+-
+set blend 1
+start rotation -11.125
+-
+-
+
+set blend 2
+start rotation 11.125
+-
+-
+set blend 1
+start rotation -11.125
+-
+-
+
+set blend 2
+start rotation 11.125
+-
+-
+set blend 1
+start rotation -11.125
+-
+-
+
+set blend 2
+start rotation 11.125
+-
+-
+set blend 1
+start rotation -11.125
+-
+-
+
+set blend 2
+start rotation 11.125
+-
+-
+set blend 1
+start rotation -11.125
+-
+-
+
+start zoom 0.2
+set blend 2
+start rotation 90
+-
+-
+-
+-
+
+# SZÓLÓ
+# Bar 111
+set position -1.5 0
+start zoom 2
+set blend 2
+start rotation 11.125
+-
+-
+start rotation -11.125
+-
+-
+
+start rotation 11.125
+-
+-
+start rotation -11.125
+-
+-
+
+start rotation 11.125
+-
+-
+start rotation -11.125
+-
+-
+
+start rotation 11.125
+-
+-
+start rotation -11.125
+-
+-
+
+start rotation 11.125
+-
+-
+start rotation -11.125
+-
+-
+
+start rotation 11.125
+-
+-
+start rotation -11.125
+-
+-
+
+start rotation 11.125
+-
+-
+start rotation -11.125
+-
+-
+
+start rotation 11.125
+-
+-
+start rotation -11.125
+-
+-
+
+# Bar 119
+start rotation 22.5
+start color 0 4 5 0
+set blend 1
+-
+-
+start rotation -22.5
+set blend 2
+-
+-
+
+start rotation 22.5
+set blend 1
+-
+-
+start rotation -22.5
+set blend 2
+-
+-
+
+start rotation 22.5
+set blend 1
+-
+-
+start rotation -22.5
+set blend 2
+-
+-
+
+start rotation 22.5
+set blend 1
+-
+-
+start rotation -22.5
+set blend 2
+-
+-
+
+start rotation 22.5
+set blend 1
+-
+-
+start rotation -22.5
+set blend 2
+-
+-
+
+start rotation 22.5
+set blend 1
+-
+-
+start rotation -22.5
+set blend 2
+-
+-
+
+start rotation 22.5
+set blend 1
+-
+-
+start rotation -22.5
+set blend 2
+-
+-
+
+start rotation 22.5
+set blend 1
+-
+-
+start rotation -22.5
+set blend 2
+-
+-
+
+# SZIMFONIKUS
+log SZIMFONIKUS
+
+# Bar 127
+set blend 2
+set position -0.253361370929485 0.651444426752843
+set resolution 1600
+set rotation 0
+set zoom 30000000000000000
+change color 0 0 0 -170
+start rotation 11.25
+start zoom 0.7
+set fade 0.9
+start color 19 13 26 0
+start rotation 11.25
+-
+-
+start rotation -11.25
+-
+-
+
+start rotation 11.25
+-
+-
+start rotation -11.25
+-
+-
+
+start rotation 11.25
+-
+-
+start rotation -11.25
+-
+-
+
+start rotation 11.25
+-
+-
+start rotation -11.25
+-
+-
+
+start rotation 11.25
+-
+-
+start rotation -11.25
+-
+-
+
+start rotation 11.25
+-
+-
+start rotation -11.25
+-
+-
+
+start rotation 11.25
+-
+-
+start rotation -11.25
+-
+-
+
+start rotation 11.25
+-
+-
+start rotation -11.25
+-
+-
+
+start rotation 11.25
+-
+-
+start rotation -11.25
+-
+-
+
+start rotation 11.25
+-
+-
+start rotation -11.25
+-
+-
+
+start rotation 11.25
+-
+-
+start rotation -11.25
+-
+-
+
+start rotation 11.25
+-
+-
+start rotation -11.25
+-
+-
+
+start rotation 11.25
+-
+-
+start rotation -11.25
+-
+-
+
+start rotation 11.25
+-
+-
+start rotation -11.25
+-
+-
+
+start rotation 11.25
+-
+-
+start rotation -11.25
+-
+-
+
+set resolution 1024
+start resolution -160
+start rotation 11.25
+-
+-
+start rotation -11.25
+-
+-
+
+# Bar 143
+start color 32 16 64 0
+start rotation 11.25
+start zoom 1.818181818181818
+start resolution 160
+-
+-
+-
+-
+
+set resolution 1024
+start zoom 0.55
+start resolution -160
+-
+-
+-
+-
+
+
+start zoom 1.818181818181818
+start resolution 160
+-
+-
+-
+-
+
+
+start zoom 0.55
+set resolution 1024
+start resolution -160
+-
+-
+-
+-
+
+start zoom 1.818181818181818
+start resolution 160
+-
+-
+-
+-
+
+start zoom 0.55
+set resolution 1024
+start resolution -160
+-
+-
+-
+-
+
+start zoom 1.818181818181818
+start resolution 160
+-
+-
+-
+-
+
+start zoom 0.55
+set resolution 1024
+start resolution -160
+-
+-
+-
+-
+
+start zoom 1.818181818181818
+start resolution 160
+-
+-
+-
+-
+
+start zoom 0.55
+set resolution 1024
+start resolution -160
+-
+-
+-
+-
+
+start zoom 1.818181818181818
+start resolution 160
+-
+-
+-
+-
+
+start zoom 0.55
+set resolution 1024
+start resolution -160
+-
+-
+-
+-
+
+start zoom 1.818181818181818
+start resolution 160
+-
+-
+-
+-
+
+start zoom 0.55
+set resolution 1024
+start resolution -160
+-
+-
+-
+-
+
+start zoom 1.818181818181818
+start resolution 160
+-
+-
+-
+-
+
+start zoom 0.55
+set resolution 1024
+start resolution -160
+-
+-
+-
+-
+
+# Outro
+
+# Bar 159
+stop zoom 
+stop resolution
+stop color
+stop rotation
+set blend 1
+set tracemode 3
+set fade 0.985
+set position -0.562202621523037 -0.642817149072775
+set zoom 1000000000000000
+set rotation 0
+
+set resolution 252
+-
+-
+set resolution 1
+-
+-
+
+set resolution 254
+-
+-
+set resolution 1
+-
+-
+
+set resolution 256
+-
+-
+-
+-
+
+set resolution 1
+-
+-
+-
+-
+
+set resolution 259
+-
+-
+set resolution 1
+-
+-
+
+set resolution 261
+-
+-
+set resolution 1
+-
+-
+
+set resolution 263
+-
+-
+-
+-
+
+set resolution 1
+-
+-
+set resolution 266
+-
+set resolution 1
+-
+
+set fade 0.9
+-
+-
+-
+-
+
+quit

@@ -1,0 +1,764 @@
+title Csepptelep
+bpm 100
+x -1.26416961157367
+y -0.0439310845404968
+zoom 10000
+maxn 128
+-
+# BEATS START
+
+# Bar 1
+set save 0
+set render 0
+start resolution 4
+set tracemode 3
+set blend 1
+start rotation -12
+start zoom 0.97
+start color 0 1 0 0
+-
+-
+start rotation 4
+-
+-
+
+# Bar 2
+start rotation -12
+-
+-
+start rotation 4
+-
+-
+
+# Bar 3
+start rotation -12
+-
+-
+start rotation 4
+-
+-
+
+# Bar 4
+start rotation -12
+-
+-
+start rotation 4
+-
+-
+
+# Bar 5
+start rotation -12
+-
+-
+start rotation -4
+-
+-
+
+# Bar 6
+start rotation -12
+-
+-
+start rotation -4
+-
+-
+
+# Bar 7
+start rotation -12
+-
+-
+start rotation -4
+-
+-
+
+# Bar 8
+start rotation -12
+-
+-
+start rotation -4
+-
+-
+
+# INTRO 2
+
+# Bar 9
+set blend 1
+change color 0 0 0 128
+start rotation 15
+start color 1 0 0 0
+start zoom 1.06383
+-
+-
+start rotation 9
+start color 0 2 0 0
+start zoom 0.94
+-
+-
+
+# Bar 10
+start rotation 15
+start color 3 0 0 0
+start zoom 1.06383
+-
+-
+start rotation 9
+start color 0 5 0 0
+start zoom 0.94
+-
+-
+
+# Bar 11
+start rotation 15
+start color 2 0 0 0
+start zoom 1.06383
+-
+-
+start rotation 9
+start color 0 1 0 0
+start zoom 0.94
+-
+-
+
+# Bar 12
+start rotation 15
+start color 3 0 0 0
+start zoom 1.06383
+-
+-
+start rotation 9
+start color 0 2 0 0
+start zoom 0.94
+-
+-
+
+# Bar 13
+start rotation -15
+start color 0 0 5 0
+start zoom 1.06383
+-
+-
+start rotation -9
+start color 1 0 0 0
+start zoom 0.94
+-
+-
+
+# Bar 14
+start rotation -15
+start color 0 0 3 0
+start zoom 1.06383
+-
+-
+start rotation -9
+start color 2 0 0 0
+start zoom 0.94
+-
+-
+
+# Bar 15
+start rotation -15
+start color 0 0 4 0
+start zoom 1.06383
+-
+-
+start rotation -9
+start color 2 0 0 0
+start zoom 0.94
+-
+-
+
+# Bar 16
+start rotation -15
+start color 0 0 1 0
+start zoom 1.06383
+-
+-
+start rotation -9
+start color 5 0 0 0
+start zoom 0.94
+-
+-
+
+
+# Gitár bejön
+
+# Bar 17
+set resolution 1024
+start zoom 0.9
+start rotation 10
+start color 7 4 0 0
+start resolution -33
+-
+start zoom 0.95
+-
+-
+-
+
+# Bar 18
+start rotation -15
+start zoom 0.9
+-
+start zoom 0.96
+-
+-
+-
+
+
+# Bar 19
+start rotation 20
+start zoom 0.9
+-
+start zoom 0.96
+-
+-
+-
+
+
+# Bar 20
+start rotation -25
+start zoom 0.9
+-
+start zoom 0.96
+-
+-
+-
+
+# Bar 21
+start zoom 0.88
+start rotation 30
+-
+start zoom 0.94
+-
+-
+-
+
+# Bar 22
+start rotation -35
+start zoom 0.88
+-
+start zoom 0.94
+-
+-
+-
+
+# SZÜNET
+
+# Bar 23
+stop zoom
+stop rotation
+set resolution 1
+start resolution 64
+set blend 1
+-
+-
+-
+-
+
+# Bar 24
+start resolution -64
+set tracemode 3
+-
+-
+-
+-
+
+# NYUGI
+
+# Bar 25
+
+set position -1.5 0
+set rotation 0
+set zoom 27123206462480200
+set blend 1
+set trace 3
+stop color
+change color 148 89 44 0
+set resolution 150
+start resolution 4
+start rotation 11.25
+-
+-
+-
+-
+
+# Bar 26
+-
+-
+-
+-
+
+# Bar 27
+-
+-
+-
+-
+
+# Bar 28
+-
+-
+-
+-
+
+# Bar 29
+set tracemode 3
+start zoom 0.5
+start rotation 4
+start color 1 2 3 0
+-
+-
+-
+-
+
+# Bar 30
+-
+-
+-
+-
+
+# Bar 31
+-
+-
+-
+-
+
+# Bar 32
+-
+-
+-
+-
+
+
+# BUILDUP
+
+# Bar 33
+set position -1.26416961157367 -0.0439310845404968
+set zoom 786.586
+stop zoom
+set tracemode 3
+set blend 1
+start color 1 2 3 0
+set resolution 1
+start resolution 128
+-
+-
+start resolution -128
+-
+-
+
+# Bar 34
+set resolution 1
+start resolution 128
+-
+-
+start resolution -128
+-
+-
+
+# Bar 35
+set resolution 1
+start resolution 128
+-
+-
+start resolution -128
+-
+-
+
+# Bar 36
+set resolution 1
+start resolution 128
+set tracemode 2
+-
+-
+start resolution -112
+start zoom 0.6
+-
+-
+
+# KAOSZ
+
+# Bar 37
+stop resolution
+stop rotation
+stop zoom
+set tracemode 3
+-
+-
+set resolution 1020
+# start resolution 256
+# start color 1 1 0 0
+set tracemode 3
+set blend 2
+start rotation 1
+start zoom 1.2
+-
+-
+
+# Bar 38
+start zoom 0.8333333333
+-
+-
+-
+-
+
+# Bar 39
+start zoom 1.2
+-
+-
+-
+-
+
+# Bar 40
+start zoom 0.8333333333
+-
+-
+-
+-
+
+# Bar 41
+start color 2 2 2 0
+start zoom 1.2
+-
+-
+-
+-
+
+# Bar 42
+start zoom 0.8333333333
+-
+-
+-
+-
+
+# Bar 43
+start zoom 1.2
+-
+-
+-
+-
+
+# Bar 44
+start zoom 0.8333333333
+-
+-
+-
+-
+
+# Bar 45
+start zoom 1.2
+start rotation 2
+-
+-
+-
+-
+
+# Bar 46
+-
+-
+-
+-
+
+# Bar 47
+-
+-
+-
+-
+
+# Bar 48
+-
+-
+-
+-
+
+# Bar 49
+-
+-
+-
+-
+
+# Bar 50
+-
+-
+-
+-
+
+# Bar 51
+start resolution -128
+-
+-
+-
+-
+
+# Bar 52
+start resolution -96
+-
+-
+start resolution -64
+-
+-
+
+# LASSU
+
+# Bar 53
+set resolution 0
+start resolution 256
+set blend 1
+start color 2 0 254 0
+start rotation -1
+start zoom 1.5
+-
+-
+-
+-
+
+# Bar 54
+stop resolution
+-
+-
+-
+-
+
+# Bar 55
+-
+-
+-
+-
+
+# Bar 56
+-
+-
+-
+-
+
+# Bar 57
+-
+-
+-
+-
+
+# Bar 58
+-
+-
+-
+-
+
+# Bar 59
+-
+-
+-
+-
+
+# Bar 60
+set render 1
+-
+-
+-
+-
+
+# Bar 61
+set save 1
+start resolution 128
+set blend 2
+start rotation 0.5
+-
+-
+-
+-
+
+# Bar 62
+-
+-
+-
+-
+
+# Bar 63
+-
+-
+-
+-
+
+# Bar 64
+-
+-
+-
+-
+
+# Bar 65
+-
+-
+-
+-
+
+
+# Bar 66
+-
+-
+-
+-
+
+# Bar 67
+-
+-
+-
+-
+
+# Bar 68
+-
+-
+-
+-
+
+# LAJTI SZOLO
+
+# Bar 69
+stop resolution
+stop zoom
+stop color
+stop rotation
+set blend 1
+set resolution 100
+-
+-
+-
+-
+
+# Bar 70
+-
+-
+-
+-
+
+# Bar 71 (Totally different)
+
+set position -1.23429421488983 -0.0895041995225031
+set zoom 30000
+set resolution 1024
+set blend 1
+start resolution 128
+start color 2 0 0 0
+-
+-
+-
+-
+
+
+# Bar 72
+-
+-
+-
+-
+
+# Bar 73
+start resolution -64
+start zoom 0.8
+start trace 1
+start rotation 1
+-
+-
+-
+-
+
+
+# Bar 74
+start trace 3
+start rotation -1
+-
+-
+-
+-
+
+# Bar 75
+start trace 1
+start rotation 1
+-
+-
+-
+-
+
+
+# Bar 76
+start trace 3
+start rotation -1
+-
+-
+-
+-
+
+# Lajti akkordozas
+
+# Bar 77
+set blend 2
+stop resolution
+start resolution -32
+start zoom 0.72
+start color 1 3 2 0
+start rotation 3
+-
+-
+-
+-
+
+# Bar 78
+start rotation -2.5
+-
+-
+-
+-
+
+# Bar 79
+start rotation 2
+-
+-
+-
+-
+
+# Bar 80
+start rotation -1.5
+-
+-
+-
+-
+
+
+# Bar 81
+start rotation 1
+-
+-
+-
+-
+
+# Bar 82
+start rotation -0.5
+-
+-
+-
+-
+
+# Bar 83
+start rotation 0.3
+-
+-
+-
+-
+
+# Bar 84
+start rotation -0.15
+-
+-
+-
+-
+
+# OUTRO
+
+# Bar 85
+stop rotation
+-
+-
+-
+-
+
+# Bar 86
+-
+-
+-
+-
+
+quit
