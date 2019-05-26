@@ -51,7 +51,13 @@ coord_t ExternalImage::getFractalValue(coord_t mappedX, coord_t mappedY) const
     Uint32 pixelValue = getPixel(_surface, xPixel, yPixel);
     SDL_GetRGBA(pixelValue, _surface->format, &r, &g, &b, &a);
 
-    return (r+g+b) / (3.0 * 255.0) * _maxN;
+    coord_t rF, gF, bF;
+
+    rF = r /255.0;
+    gF = g / 255.0 + 1;
+    bF = b /255.0 + 2;
+
+    return (rF + gF + bF) / 6.0 * _maxN;
 }
 
 ExternalImage::ExternalImage(coord_t xCenter, coord_t yCenter, coord_t zoom, coord_t maxN, const std::string &imagePath,
