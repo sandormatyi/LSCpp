@@ -17,27 +17,11 @@
 #include <thread>
 
 
-static void drawPointsInThread(thread_data *threadData)
-{
-    for (int i = 0; i < thread_data::max; ++i) {
-        int x = (i % TEXTURE_WIDTH);
-        int y = i / TEXTURE_WIDTH + TEXTURE_HEIGHT * threadData->thread_number / THREAD_NUMBER;
-        threadData->n[i] = threadData->fractal->getFractalValue(x, TEXTURE_WIDTH, y, TEXTURE_HEIGHT);
-    }
-    (*(threadData->counter))--;
-}
-
 FractalRenderer::FractalRenderer(Fractal &fractal, cv::InputOutputArray matrix, const std::string &folderName) :
     _matrix(matrix),
     _fractal(fractal),
     _folderName(std::string("C:/Users/matyi/Pictures/fractal/") + folderName + "_" + std::to_string(time(nullptr)))
 {
-    _data = (thread_data *) malloc(THREAD_NUMBER * sizeof(thread_data));
-}
-
-FractalRenderer::~FractalRenderer()
-{
-    delete (_data);
 }
 
 void FractalRenderer::invalidate()
@@ -193,13 +177,11 @@ void FractalRenderer::colorByHistogram(cv::InputArray fractalValues)
     int* histogram = new int[maxN];
     memset(histogram, 0, maxN * sizeof(int));
 
-    for (int i = 0; i < THREAD_NUMBER; ++i) {
-        const thread_data *threadData = &_data[i];
-
-        for (int j = 0; j < thread_data::max; ++j) {
-            histogram[(int)fractalValues.getMat().at<coord_t>(j)]++;
+    cv::parallel_for_(cv::Range(0, SCREEN_WIDTH * SCREEN_HEIGHT), [&](const cv::Range& range) {
+        for (int i = range.start; i < range.end; ++i) {
+            histogram[(int)fractalValues.getMat().at<coord_t>(i)]++;
         }
-    }
+    });
 
     coord_t total = 0;
     for (int i = 0; i < maxN; ++i) {

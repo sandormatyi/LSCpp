@@ -34,21 +34,11 @@ std::string to_string(BlendMode blendMode);
 std::string to_string(ColorMode colorMode);
 std::string to_string(TraceMode traceMode);
 
-struct thread_data
-{
-    static const int max = TEXTURE_WIDTH * TEXTURE_HEIGHT / THREAD_NUMBER;
-    int thread_number;
-    coord_t n[max];
-    const Fractal *fractal;
-    std::atomic<uint32_t> *counter;
-};
-
 
 class FractalRenderer
 {
 public:
     FractalRenderer(Fractal &fractal, cv::InputOutputArray matrix, const std::string &folderName);
-    ~FractalRenderer();
 
     void invalidate();
     void render();
@@ -90,8 +80,6 @@ private:
     TraceMode _traceMode = DISABLE;
 
     int _iterationN = 1;
-
-    thread_data *_data;
 };
 
 
