@@ -102,11 +102,6 @@ void FractalRenderer::render()
 
 void FractalRenderer::drawInfoText(uint64_t calculateTime, uint64_t colorTime, uint64_t saveTime)
 {
-    const static uint64_t freq = 1;
-    const uint64_t calculateMs = calculateTime * 1000 / freq;
-    const uint64_t colorMs = colorTime * 1000 / freq;
-    const uint64_t saveMs = saveTime * 1000 / freq;
-
     std::stringstream ss;
     // ss << _fractal.getFractalName() << std::endl;
 
@@ -115,8 +110,8 @@ void FractalRenderer::drawInfoText(uint64_t calculateTime, uint64_t colorTime, u
     ss << "Zoom: " << _fractal.getZoom() << std::endl;
     ss << "Resolution: " << _fractal.getMaxN() << std::endl;
     ss << "Rotation: " << _fractal.getRotAngle() << std::endl;
-    ss << "Render time: " << calculateMs + colorMs + saveMs << " ms (" << calculateMs << " + " << colorMs << " + "
-       << saveMs << ")" << std::endl;
+    ss << "Render time: " << calculateTime + colorTime + saveTime << " ms (" << calculateTime << " + " << colorTime << " + "
+       << saveTime << ")" << std::endl;
     // ss << "Threads: " << THREAD_NUMBER << std::endl;
     ss << "Color mode: " << to_string(_colorMode) << std::endl;
     ss << "Blend mode: " << to_string(_blendMode) << std::endl;
@@ -163,8 +158,8 @@ uint64_t FractalRenderer::calculateFractalValues(cv::OutputArray result)
     //while (counter > 0);
 
     const auto end = std::chrono::high_resolution_clock::now();
-
-    return (end - start).count();
+    std::chrono::duration<double> diff = end - start;
+    return (uint64_t)(diff.count() * 1000);
 }
 
 uint64_t FractalRenderer::colorPixels(cv::InputArray fractalValues)
@@ -187,7 +182,8 @@ uint64_t FractalRenderer::colorPixels(cv::InputArray fractalValues)
     }
 
     const auto end = std::chrono::high_resolution_clock::now();
-    return (end - start).count();
+    std::chrono::duration<double> diff = end - start;
+    return (uint64_t)(diff.count() * 1000);
 }
 
 void FractalRenderer::colorByHistogram(cv::InputArray fractalValues)
@@ -315,7 +311,8 @@ uint64_t FractalRenderer::saveImage()
     cv::imwrite(filePath, _matrix);
 
     const auto end = std::chrono::high_resolution_clock::now();
-    return (end - start).count();
+    std::chrono::duration<double> diff = end - start;
+    return (uint64_t)(diff.count() * 1000);
 }
 
 void FractalRenderer::drawGreenCrosshair()
