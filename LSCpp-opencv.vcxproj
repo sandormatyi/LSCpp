@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>15.0</VCProjectVersion>
+    <ProjectGuid>{602E2C39-4C97-4579-816A-1C5D9ED8DE4C}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <Optimization>Disabled</Optimization>
+    </ClCompile>
+    <Link>
+      <TargetMachine>MachineX86</TargetMachine>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <TargetMachine>MachineX86</TargetMachine>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="src\colors.cpp" />
+    <ClCompile Include="src\command\change\changeColorsCommand.cpp" />
+    <ClCompile Include="src\command\change\changePositionCommand.cpp" />
+    <ClCompile Include="src\command\change\changeResolutionCommand.cpp" />
+    <ClCompile Include="src\command\change\changeRotationCommand.cpp" />
+    <ClCompile Include="src\command\change\changeZoomCommand.cpp" />
+    <ClCompile Include="src\command\change\directionMoveCommand.cpp" />
+    <ClCompile Include="src\command\logCommand.cpp" />
+    <ClCompile Include="src\command\set\setBlendModeCommand.cpp" />
+    <ClCompile Include="src\command\set\setEnableRenderCommand.cpp" />
+    <ClCompile Include="src\command\set\setFadeFactorCommand.cpp" />
+    <ClCompile Include="src\command\set\setPositionCommand.cpp" />
+    <ClCompile Include="src\command\set\setResolutionCommand.cpp" />
+    <ClCompile Include="src\command\set\setRotationCommand.cpp" />
+    <ClCompile Include="src\command\set\setSaveImageCommand.cpp" />
+    <ClCompile Include="src\command\set\setTraceModeCommand.cpp" />
+    <ClCompile Include="src\command\set\setZoomCommand.cpp" />
+    <ClCompile Include="src\command\start\startChangeColorsCommand.cpp" />
+    <ClCompile Include="src\command\start\startChangeResolutionCommand.cpp" />
+    <ClCompile Include="src\command\start\startRotateCommand.cpp" />
+    <ClCompile Include="src\command\start\startZoomCommand.cpp" />
+    <ClCompile Include="src\command\stop\stopChangeColorsCommand.cpp" />
+    <ClCompile Include="src\command\stop\stopChangeResolutionCommand.cpp" />
+    <ClCompile Include="src\command\stop\stopProgramCommand.cpp" />
+    <ClCompile Include="src\command\stop\stopRotateCommand.cpp" />
+    <ClCompile Include="src\command\stop\stopZoomCommand.cpp" />
+    <ClCompile Include="src\controller\automaticController.cpp" />
+    <ClCompile Include="src\controller\controller.cpp" />
+    <ClCompile Include="src\controller\keyboardController.cpp" />
+    <ClCompile Include="src\fractal\externalImage.cpp" />
+    <ClCompile Include="src\fractal\fractal.cpp" />
+    <ClCompile Include="src\fractal\mandelbrot.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\render\fractalRenderer.cpp" />
+    <ClCompile Include="src\render\renderedText.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\colors.h" />
+    <ClInclude Include="src\command\change\changeColorsCommand.h" />
+    <ClInclude Include="src\command\change\changePositionCommand.h" />
+    <ClInclude Include="src\command\change\changeResolutionCommand.h" />
+    <ClInclude Include="src\command\change\changeRotationCommand.h" />
+    <ClInclude Include="src\command\change\changeZoomCommand.h" />
+    <ClInclude Include="src\command\change\directionMoveCommand.h" />
+    <ClInclude Include="src\command\command.h" />
+    <ClInclude Include="src\command\logCommand.h" />
+    <ClInclude Include="src\command\set\setBlendModeCommand.h" />
+    <ClInclude Include="src\command\set\setEnableRenderCommand.h" />
+    <ClInclude Include="src\command\set\setFadeFactorCommand.h" />
+    <ClInclude Include="src\command\set\setPositionCommand.h" />
+    <ClInclude Include="src\command\set\setResolutionCommand.h" />
+    <ClInclude Include="src\command\set\setRotationCommand.h" />
+    <ClInclude Include="src\command\set\setSaveImageCommand.h" />
+    <ClInclude Include="src\command\set\setTraceModeCommand.h" />
+    <ClInclude Include="src\command\set\setZoomCommand.h" />
+    <ClInclude Include="src\command\start\startChangeColorsCommand.h" />
+    <ClInclude Include="src\command\start\startChangeResolutionCommand.h" />
+    <ClInclude Include="src\command\start\startRotateCommand.h" />
+    <ClInclude Include="src\command\start\startZoomCommand.h" />
+    <ClInclude Include="src\command\stop\stopChangeColorsCommand.h" />
+    <ClInclude Include="src\command\stop\stopChangeResolutionCommand.h" />
+    <ClInclude Include="src\command\stop\stopProgramCommand.h" />
+    <ClInclude Include="src\command\stop\stopRotateCommand.h" />
+    <ClInclude Include="src\command\stop\stopZoomCommand.h" />
+    <ClInclude Include="src\controller\automaticController.h" />
+    <ClInclude Include="src\controller\controller.h" />
+    <ClInclude Include="src\controller\keyboardController.h" />
+    <ClInclude Include="src\fractal\externalImage.h" />
+    <ClInclude Include="src\fractal\fractal.h" />
+    <ClInclude Include="src\fractal\mandelbrot.h" />
+    <ClInclude Include="src\render\fractalRenderer.h" />
+    <ClInclude Include="src\render\renderedText.h" />
+    <ClInclude Include="src\render\renderParams.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
