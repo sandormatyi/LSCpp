@@ -64,15 +64,15 @@ public:
     void setTraceMode(TraceMode traceMode);
 
 private:
-    uint64_t calculateFractalValues();
-    uint64_t colorPixels();
+    uint64_t calculateFractalValues(cv::OutputArray result);
+    uint64_t colorPixels(cv::InputArray fractalValues);
     uint64_t saveImage();
 
     void drawInfoText(uint64_t calculateTime, uint64_t colorTime, uint64_t saveTime);
     void drawGreenCrosshair();
 
-    void colorByHistogram();
-    void colorLinear();
+    void colorByHistogram(cv::InputArray fractalValues);
+    void colorLinear(cv::InputArray fractalValues);
     void colorPixel(const SDL_Color &c, int x, int y);
 
 private:

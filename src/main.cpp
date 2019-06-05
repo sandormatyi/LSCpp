@@ -156,8 +156,8 @@ int main(int argc, char *args[])
     //            automaticController.setQuitFlag();
     //        }
     //    }
-        int key = cv::waitKey(0);
-        if (keyboardController.processKeyboardInput(key, false)) {
+        int key = cv::waitKey(1);
+        if (key > 0 && keyboardController.processKeyboardInput(key, false)) {
             fractalRenderer.invalidate();
         }
         if (keyboardController.doAutomaticTransformations()) {

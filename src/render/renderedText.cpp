@@ -5,7 +5,13 @@
 
 void textToTexture(const std::string& text, cv::InputOutputArray texture, int textAreaSize)
 {
-    cv::putText(texture, text, cv::Point(0, 0), cv::FONT_HERSHEY_DUPLEX, 1, 1);
+    std::stringstream ss(text);
+    std::string line;
+    int y = 25;
+    while (!std::getline(ss, line).eof()) {
+        cv::putText(texture, line, cv::Point(0, y), cv::FONT_HERSHEY_DUPLEX, 0.6, 0);
+        y += 25;
+    }
 }
 
 /*

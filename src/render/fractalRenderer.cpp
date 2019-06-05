@@ -11,6 +11,7 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/core/utility.hpp>
 #include <chrono>  // for high_resolution_clock
 #include <direct.h> // _mkdir
 #include <thread>
@@ -78,9 +79,11 @@ void FractalRenderer::render()
     uint64_t saveTime = 0;
 
     if (_enableRender) {
-        calculateTime = calculateFractalValues();
+        cv::Mat fractalValues(SCREEN_HEIGHT, SCREEN_WIDTH, CV_64FC1);
 
-        colorTime = colorPixels();
+        calculateTime = calculateFractalValues(fractalValues);
+
+        colorTime = colorPixels(fractalValues);
 
         if (_saveImage) {
             saveTime = saveImage();
@@ -125,27 +128,46 @@ void FractalRenderer::drawInfoText(uint64_t calculateTime, uint64_t colorTime, u
     textToTexture(ss.str(), _matrix, 600);
 }
 
-uint64_t FractalRenderer::calculateFractalValues()
+uint64_t FractalRenderer::calculateFractalValues(cv::OutputArray result)
 {
     const auto start = std::chrono::high_resolution_clock::now();
     std::atomic<uint32_t> counter = THREAD_NUMBER;
 
-    for (int i = 0; i < THREAD_NUMBER; ++i) {
-        _data[i].fractal = &_fractal;
-        _data[i].thread_number = i;
-        _data[i].counter = &counter;
-        std::thread thread(drawPointsInThread, &_data[i]);
-        thread.join(); // TODO: Ez gányolás
-    }
+    cv::parallel_for_(cv::Range(0, SCREEN_WIDTH*SCREEN_HEIGHT), [&](const cv::Range& range) {
+        for (int r = range.start; r < range.end; r++) {
+            int x = r % _matrix.cols();
+            int y = r / _matrix.cols();
 
-    while (counter > 0);
+            coord_t value = _fractal.getFractalValue(x, SCREEN_WIDTH, y, SCREEN_HEIGHT);
+            result.getMat().at<coord_t>(y, x) = value;
+        }
+    });
+
+//#pragma omp parallel for
+//    for (int r = range.start; r < range.end; r++) {
+//        int y = r / _matrix.cols();
+//        int x = r % _matrix.cols();
+//
+//        coord_t value = _fractal.getFractalValue(x, SCREEN_WIDTH, y, SCREEN_HEIGHT);
+//        result.getMat().at<coord_t>(y, x) = value;
+//    }
+
+    //for (int i = 0; i < THREAD_NUMBER; ++i) {
+    //    _data[i].fractal = &_fractal;
+    //    _data[i].thread_number = i;
+    //    _data[i].counter = &counter;
+    //    std::thread thread(drawPointsInThread, &_data[i]);
+    //    thread.join(); // TODO: Ez gányolás
+    //}
+
+    //while (counter > 0);
 
     const auto end = std::chrono::high_resolution_clock::now();
 
     return (end - start).count();
 }
 
-uint64_t FractalRenderer::colorPixels()
+uint64_t FractalRenderer::colorPixels(cv::InputArray fractalValues)
 {
     const auto start = std::chrono::high_resolution_clock::now();
 
@@ -157,10 +179,10 @@ uint64_t FractalRenderer::colorPixels()
 
     switch (_colorMode) {
         case HISTOGRAM:
-            colorByHistogram();
+            colorByHistogram(fractalValues);
             break;
         case LINEAR:
-            colorLinear();
+            colorLinear(fractalValues);
             break;
     }
 
@@ -168,7 +190,7 @@ uint64_t FractalRenderer::colorPixels()
     return (end - start).count();
 }
 
-void FractalRenderer::colorByHistogram()
+void FractalRenderer::colorByHistogram(cv::InputArray fractalValues)
 {
     const int maxN = (int) (_fractal.getMaxN() + 1);
 
@@ -179,7 +201,7 @@ void FractalRenderer::colorByHistogram()
         const thread_data *threadData = &_data[i];
 
         for (int j = 0; j < thread_data::max; ++j) {
-            histogram[(int) threadData->n[j]]++;
+            histogram[(int)fractalValues.getMat().at<coord_t>(j)]++;
         }
     }
 
@@ -212,30 +234,28 @@ void FractalRenderer::colorByHistogram()
     delete[] histogram;
 }
 
-void FractalRenderer::colorLinear()
+void FractalRenderer::colorLinear(cv::InputArray fractalValues)
 {
     const coord_t maxN = _fractal.getMaxN();
 
-    for (int i = 0; i < THREAD_NUMBER; ++i) {
-        const thread_data *threadData = &_data[i];
+    cv::parallel_for_(cv::Range(0, SCREEN_WIDTH*SCREEN_HEIGHT), [&](const cv::Range& range) {
+        for (int i = range.start; i < range.end; ++i) {
+            const unsigned int x = i % TEXTURE_WIDTH;
+            const unsigned int y = i / TEXTURE_WIDTH;
 
-        for (int j = 0; j < thread_data::max; ++j) {
-            const unsigned int x = j % TEXTURE_WIDTH;
-            const unsigned int y = j / TEXTURE_WIDTH + threadData->thread_number * TEXTURE_HEIGHT / THREAD_NUMBER;
-
-            coord_t n = threadData->n[j];
+            coord_t n = fractalValues.getMat().at<coord_t>(y, x);
 
             if (n > 0) {
                 coord_t f = n / maxN;
                 int colorIndex = getColorIndex(f);
                 float_color_t &c1 = getColor(colorIndex);
                 float_color_t &c2 = getColor(colorIndex + 1);
-                float_color_t c = interpolate(c1, c2, f - (int) (f));
+                float_color_t c = interpolate(c1, c2, f - (int)(f));
 
                 colorPixel(to_SDL_Color(c), x, y);
             }
         }
-    }
+    });
 }
 
 void FractalRenderer::colorPixel(const SDL_Color &c, int x, int y)
