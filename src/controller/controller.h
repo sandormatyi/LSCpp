@@ -2,7 +2,6 @@
 #define MANDELBROT_CONTROLLER_H
 
 
-#include <SDL_pixels.h>
 #include "../fractal/mandelbrot.h"
 #include "../render/fractalRenderer.h"
 #include "../colors.h"

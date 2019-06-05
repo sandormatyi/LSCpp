@@ -1,43 +1,41 @@
-#include <SDL_timer.h>
 #include <string>
 #include <cstring>
-#include <SDL_thread.h>
+#include <cstdlib>
 #include <sstream>
-#include <io.h>
-#include <SDL_image.h>
 #include <cmath>
 #include <iomanip>
+#include <atomic>
 #include "fractalRenderer.h"
 #include "../colors.h"
 #include "renderedText.h"
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgcodecs.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
+#include <chrono>  // for high_resolution_clock
+#include <direct.h> // _mkdir
+#include <thread>
 
-static int drawPointsInThread(void *data)
+
+static void drawPointsInThread(thread_data *threadData)
 {
-    thread_data *threadData = (thread_data *) data;
-
     for (int i = 0; i < thread_data::max; ++i) {
         int x = (i % TEXTURE_WIDTH);
         int y = i / TEXTURE_WIDTH + TEXTURE_HEIGHT * threadData->thread_number / THREAD_NUMBER;
         threadData->n[i] = threadData->fractal->getFractalValue(x, TEXTURE_WIDTH, y, TEXTURE_HEIGHT);
     }
-
-    SDL_AtomicDecRef(threadData->counter);
-
-    return 0;
+    (*(threadData->counter))--;
 }
 
-FractalRenderer::FractalRenderer(Fractal &fractal, SDL_Renderer *renderer, const std::string &folderName) :
-        _fractal(fractal),
-        _renderer(renderer),
-        _folderName(std::string("C:/Users/matyi/Pictures/fractal/") + folderName + "_" + std::to_string(time(nullptr)))
+FractalRenderer::FractalRenderer(Fractal &fractal, cv::InputOutputArray matrix, const std::string &folderName) :
+    _matrix(matrix),
+    _fractal(fractal),
+    _folderName(std::string("C:/Users/matyi/Pictures/fractal/") + folderName + "_" + std::to_string(time(nullptr)))
 {
-    _pixels = (Uint8 *) malloc(TEXTURE_WIDTH * TEXTURE_HEIGHT * 4);
     _data = (thread_data *) malloc(THREAD_NUMBER * sizeof(thread_data));
 }
 
 FractalRenderer::~FractalRenderer()
 {
-    delete (_pixels);
     delete (_data);
 }
 
@@ -68,65 +66,43 @@ void FractalRenderer::setSaveImage(bool saveImage)
 
 void FractalRenderer::render()
 {
-    static SDL_Texture *texture = SDL_CreateTexture(
-            _renderer,
-            SDL_PIXELFORMAT_ARGB8888,
-            SDL_TEXTUREACCESS_STREAMING,
-            TEXTURE_WIDTH, TEXTURE_HEIGHT
-    );
-
     if (_isValid)
         return;
 
     //Clear screen
-    SDL_SetRenderDrawColor(_renderer, 0x00, 0x00, 0x00, 0x00);
-    SDL_RenderClear(_renderer);
+    //SDL_SetRenderDrawColor(_renderer, 0x00, 0x00, 0x00, 0x00);
+    //SDL_RenderClear(_renderer);
 
-    Uint64 calculateTime = 0;
-    Uint64 colorTime = 0;
-    Uint64 saveTime = 0;
+    uint64_t calculateTime = 0;
+    uint64_t colorTime = 0;
+    uint64_t saveTime = 0;
 
     if (_enableRender) {
         calculateTime = calculateFractalValues();
 
         colorTime = colorPixels();
 
-        SDL_UpdateTexture(
-                texture,
-                nullptr,
-                _pixels,
-                TEXTURE_WIDTH * 4
-        );
-
-        SDL_RenderCopy(_renderer, texture, nullptr, nullptr);
-
         if (_saveImage) {
-            saveTime = saveImage(texture);
+            saveTime = saveImage();
         }
     }
 
     drawInfoText(calculateTime, colorTime, saveTime);
     drawGreenCrosshair();
 
-    //Update screen
-    SDL_RenderPresent(_renderer);
+    cv::imshow("Main window", _matrix);
 
     _iterationN++;
 
     _isValid = true;
 }
 
-void FractalRenderer::drawInfoText(Uint64 calculateTime, Uint64 colorTime, Uint64 saveTime)
+void FractalRenderer::drawInfoText(uint64_t calculateTime, uint64_t colorTime, uint64_t saveTime)
 {
-    // Draw text info
-    static SDL_Texture *texture = nullptr;
-
-    SDL_DestroyTexture(texture);
-
-    const static Uint64 freq = SDL_GetPerformanceFrequency();
-    const Uint64 calculateMs = calculateTime * 1000 / freq;
-    const Uint64 colorMs = colorTime * 1000 / freq;
-    const Uint64 saveMs = saveTime * 1000 / freq;
+    const static uint64_t freq = 1;
+    const uint64_t calculateMs = calculateTime * 1000 / freq;
+    const uint64_t colorMs = colorTime * 1000 / freq;
+    const uint64_t saveMs = saveTime * 1000 / freq;
 
     std::stringstream ss;
     // ss << _fractal.getFractalName() << std::endl;
@@ -146,43 +122,37 @@ void FractalRenderer::drawInfoText(Uint64 calculateTime, Uint64 colorTime, Uint6
         ss << "Image number " << _iterationN - 1;
     }
 
-    RenderedText text = textToTexture(ss.str(), _renderer, 600);
-    texture = text._texture;
-
-    SDL_Rect rect = {0, 0, text._width, text._height};
-    SDL_RenderCopyEx(_renderer, text._texture, nullptr, &rect, 0.0, nullptr, SDL_FLIP_NONE);
+    textToTexture(ss.str(), _matrix, 600);
 }
 
-Uint64 FractalRenderer::calculateFractalValues()
+uint64_t FractalRenderer::calculateFractalValues()
 {
-    SDL_atomic_t counter{THREAD_NUMBER};
-
-    const Uint64 start = SDL_GetPerformanceCounter();
+    const auto start = std::chrono::high_resolution_clock::now();
+    std::atomic<uint32_t> counter = THREAD_NUMBER;
 
     for (int i = 0; i < THREAD_NUMBER; ++i) {
-        _data[i].counter = &counter;
         _data[i].fractal = &_fractal;
         _data[i].thread_number = i;
-        char thread_name[10];
-        strcpy(thread_name, ("Thread " + std::to_string(i)).c_str());
-
-        SDL_CreateThread(drawPointsInThread, thread_name, &_data[i]);
+        _data[i].counter = &counter;
+        std::thread thread(drawPointsInThread, &_data[i]);
+        thread.join(); // TODO: Ez gányolás
     }
 
-    while (SDL_AtomicGet(&counter) > 0);
+    while (counter > 0);
 
-    const Uint64 end = SDL_GetPerformanceCounter();
-    return end - start;
+    const auto end = std::chrono::high_resolution_clock::now();
+
+    return (end - start).count();
 }
 
-Uint64 FractalRenderer::colorPixels()
+uint64_t FractalRenderer::colorPixels()
 {
-    const Uint64 start = SDL_GetPerformanceCounter();
+    const auto start = std::chrono::high_resolution_clock::now();
 
     if (_traceMode == DISABLE) {
-        memset(_pixels, 0, TEXTURE_WIDTH * TEXTURE_HEIGHT * 4);
-    } else if (_traceMode == FADE_FILLED) {
-
+        _matrix.getMat() = cv::Scalar{ 0,0,0,0 };
+    } else if (_traceMode == FADE_ALL) {
+        _matrix.getMat() *= _fadeFactor;
     }
 
     switch (_colorMode) {
@@ -194,15 +164,15 @@ Uint64 FractalRenderer::colorPixels()
             break;
     }
 
-    const Uint64 end = SDL_GetPerformanceCounter();
-    return end - start;
+    const auto end = std::chrono::high_resolution_clock::now();
+    return (end - start).count();
 }
 
 void FractalRenderer::colorByHistogram()
 {
     const int maxN = (int) (_fractal.getMaxN() + 1);
 
-    int histogram[maxN];
+    int* histogram = new int[maxN];
     memset(histogram, 0, maxN * sizeof(int));
 
     for (int i = 0; i < THREAD_NUMBER; ++i) {
@@ -223,13 +193,8 @@ void FractalRenderer::colorByHistogram()
 
         for (int j = 0; j < thread_data::max; ++j) {
             coord_t n = threadData->n[j];
-            const unsigned int offset = 4 * (threadData->thread_number * thread_data::max + j);
-
-            if (_traceMode == FADE_ALL) {
-                _pixels[offset + 0] *= _fadeFactor;
-                _pixels[offset + 1] *= _fadeFactor;
-                _pixels[offset + 2] *= _fadeFactor;
-            }
+            const unsigned int x = j % TEXTURE_WIDTH;
+            const unsigned int y = j / TEXTURE_WIDTH + threadData->thread_number * TEXTURE_HEIGHT / THREAD_NUMBER;
 
             if (n > 0) {
                 coord_t hue = 0.0;
@@ -240,10 +205,11 @@ void FractalRenderer::colorByHistogram()
                 int colorIndex = getColorIndex(hue);
                 float_color_t &c = getColor(colorIndex);
 
-                colorPixel(to_SDL_Color(c), offset);
+                colorPixel(to_SDL_Color(c), x, y);
             }
         }
     }
+    delete[] histogram;
 }
 
 void FractalRenderer::colorLinear()
@@ -256,13 +222,6 @@ void FractalRenderer::colorLinear()
         for (int j = 0; j < thread_data::max; ++j) {
             const unsigned int x = j % TEXTURE_WIDTH;
             const unsigned int y = j / TEXTURE_WIDTH + threadData->thread_number * TEXTURE_HEIGHT / THREAD_NUMBER;
-            const unsigned int offset = (TEXTURE_WIDTH * 4 * y) + x * 4;
-
-            if (_traceMode == FADE_ALL) {
-                _pixels[offset + 0] *= _fadeFactor;
-                _pixels[offset + 1] *= _fadeFactor;
-                _pixels[offset + 2] *= _fadeFactor;
-            }
 
             coord_t n = threadData->n[j];
 
@@ -273,41 +232,44 @@ void FractalRenderer::colorLinear()
                 float_color_t &c2 = getColor(colorIndex + 1);
                 float_color_t c = interpolate(c1, c2, f - (int) (f));
 
-                colorPixel(to_SDL_Color(c), offset);
+                colorPixel(to_SDL_Color(c), x, y);
             }
         }
     }
 }
 
-void FractalRenderer::colorPixel(const SDL_Color &c, int offset)
+void FractalRenderer::colorPixel(const SDL_Color &c, int x, int y)
 {
     float floatAlpha = c.a / 255.0;
     float oldAlpha = 1 - floatAlpha;
 
+    cv::Vec4b &p = _matrix.getMat().at<cv::Vec4b>(y, x);
+
+    // TODO: Remove FADE_FILLED
     if (_traceMode == FADE_FILLED) {
-        _pixels[offset + 0] *= _fadeFactor;
-        _pixels[offset + 1] *= _fadeFactor;
-        _pixels[offset + 2] *= _fadeFactor;
+        p[0] *= _fadeFactor;
+        p[1] *= _fadeFactor;
+        p[2] *= _fadeFactor;
     }
 
     switch (_blendMode) {
         case NO_ALPHA:
-            _pixels[offset + 0] = c.b;
-            _pixels[offset + 1] = c.g;
-            _pixels[offset + 2] = c.r;
-            _pixels[offset + 3] = c.a;
+            p[0] = c.b;
+            p[1] = c.g;
+            p[2] = c.r;
+            p[3] = c.a;
             break;
         case EPILEPSY:
-            _pixels[offset + 0] += (Uint8) (floatAlpha * c.b);
-            _pixels[offset + 1] += (Uint8) (floatAlpha * c.g);
-            _pixels[offset + 2] += (Uint8) (floatAlpha * c.r);
-            _pixels[offset + 3] = (Uint8) (floatAlpha * c.a);
+            p[0] += (uint8_t) (floatAlpha * c.b);
+            p[1] += (uint8_t) (floatAlpha * c.g);
+            p[2] += (uint8_t) (floatAlpha * c.r);
+            p[3] = (uint8_t) (floatAlpha * c.a);
             break;
         case SMOOTH:
-            _pixels[offset + 0] = (Uint8) ((oldAlpha * _pixels[offset + 0]) + (floatAlpha * c.b));
-            _pixels[offset + 1] = (Uint8) ((oldAlpha * _pixels[offset + 1]) + (floatAlpha * c.g));
-            _pixels[offset + 2] = (Uint8) ((oldAlpha * _pixels[offset + 2]) + (floatAlpha * c.r));
-            _pixels[offset + 3] = (Uint8) (floatAlpha * c.a);
+            p[0] = (uint8_t) ((oldAlpha * p[0]) + (floatAlpha * c.b));
+            p[1] = (uint8_t) ((oldAlpha * p[1]) + (floatAlpha * c.g));
+            p[2] = (uint8_t) ((oldAlpha * p[2]) + (floatAlpha * c.r));
+            p[3] = (uint8_t) (floatAlpha * c.a);
             break;
         default:
             break;
@@ -319,39 +281,37 @@ bool FractalRenderer::getSaveImage() const
     return _saveImage;
 }
 
-Uint64 FractalRenderer::saveImage(SDL_Texture *texture)
+uint64_t FractalRenderer::saveImage()
 {
-    const Uint64 start = SDL_GetPerformanceCounter();
+    const auto start = std::chrono::high_resolution_clock::now();
 
     static bool folderExists = false;
     if (!folderExists) {
-        mkdir(_folderName.c_str());
+        _mkdir(_folderName.c_str());
         folderExists = true;
     }
 
     std::string filePath = _folderName + "/" + std::to_string(_iterationN) + ".png";
 
-    SDL_Texture *target = SDL_GetRenderTarget(_renderer);
-    SDL_SetRenderTarget(_renderer, texture);
-    int width, height;
-    SDL_QueryTexture(texture, nullptr, nullptr, &width, &height);
-    SDL_Surface *surface = SDL_CreateRGBSurface(0, width, height, 32, 0, 0, 0, 0);
-    SDL_RenderReadPixels(_renderer, nullptr, surface->format->format, surface->pixels, surface->pitch);
-    IMG_SavePNG(surface, filePath.c_str());
-    SDL_FreeSurface(surface);
-    SDL_SetRenderTarget(_renderer, target);
+    cv::imwrite(filePath, _matrix);
 
-    const Uint64 end = SDL_GetPerformanceCounter();
-    return end - start;
+    const auto end = std::chrono::high_resolution_clock::now();
+    return (end - start).count();
 }
 
 void FractalRenderer::drawGreenCrosshair()
 {
-    SDL_SetRenderDrawColor(_renderer, 50, 255, 50, 0xFF);
-    SDL_RenderDrawLine(_renderer, TEXTURE_WIDTH / 2 - 10, TEXTURE_HEIGHT / 2 - 10, TEXTURE_WIDTH / 2 + 10,
-                       TEXTURE_HEIGHT / 2 + 10);
-    SDL_RenderDrawLine(_renderer, TEXTURE_WIDTH / 2 - 10, TEXTURE_HEIGHT / 2 + 10, TEXTURE_WIDTH / 2 + 10,
-                       TEXTURE_HEIGHT / 2 - 10);
+    const cv::Scalar colorGreen = cv::Scalar(50, 255, 50);
+
+    cv::line(_matrix, 
+        { TEXTURE_WIDTH / 2 - 10, TEXTURE_HEIGHT / 2 - 10 }, 
+        { TEXTURE_WIDTH / 2 + 10, TEXTURE_HEIGHT / 2 + 10 }, 
+        colorGreen);
+
+    cv::line(_matrix,
+        { TEXTURE_WIDTH / 2 - 10, TEXTURE_HEIGHT / 2 + 10 },
+        { TEXTURE_WIDTH / 2 + 10, TEXTURE_HEIGHT / 2 - 10 },
+        colorGreen);
 }
 
 void FractalRenderer::setEnableRender(bool enable)

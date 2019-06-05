@@ -1,15 +1,10 @@
 #include <iostream>
-#include <SDL.h>
-#include <SDL2_gfxPrimitives.h>
 #include <sstream>
 #include <vector>
 #include "fractal/mandelbrot.h"
 #include "render/renderedText.h"
-#include <parallel/algorithm>
-#include <SDL_atomic.h>
 #include <cstring>
 #include <ctime>
-#include <io.h>
 #include "controller/controller.h"
 #include "controller/keyboardController.h"
 #include "controller/automaticController.h"
@@ -17,9 +12,12 @@
 #include "colors.h"
 #include "render/fractalRenderer.h"
 #include "fractal/externalImage.h"
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui.hpp>
 
 bool scoreEnabled = false;
 
+/*
 //Starts up SDL and creates window
 bool init();
 
@@ -77,91 +75,91 @@ void close()
 
     SDL_Quit();
 }
+*/
+
 
 int main(int argc, char *args[])
 {
-    //Start up SDL and create window
-    if (!init()) {
-        std::cout << "Failed to initialize!" << std::endl;
-        close();
-        return -1;
-    }
+    initColors();
 
-    //Event handler
-    SDL_Event e;
+    Mandelbrot m(-0.302544, -0.043626, 4.45019, 464);
+    //ExternalImage m(0, 0, 1, 64, "budi_6.png", SDL_GetWindowSurface(gWindow));
 
-    //Mandelbrot m(-0.302544, -0.043626, 4.45019, 464);
-    ExternalImage m(0, 0, 1, 64, "budi_6.png", SDL_GetWindowSurface(gWindow));
+    cv::Mat img(SCREEN_HEIGHT, SCREEN_WIDTH, CV_8UC4);
+    FractalRenderer fractalRenderer(m, img, "Mosolypersely");
 
-    FractalRenderer fractalRenderer(m, gRenderer, "Mosolypersely");
-    AutomaticController automaticController(m, fractalRenderer, "../testCommandFile.mnd");
+    AutomaticController automaticController(m, fractalRenderer, "testCommandFile.mnd");
     automaticController.initialize();
 
     KeyboardController keyboardController(m, fractalRenderer, 1.05, 0.05, 1, 2, {1, 2, 3, 0});
 
+
     //While application is running
     while (!automaticController.isQuitFlagSet()) {
-        //Handle events on queue
-        while (SDL_PollEvent(&e) != 0) {
-            const Uint8 *keys = SDL_GetKeyboardState(nullptr);
-            bool isShiftPressed = keys[SDL_GetScancodeFromKey(SDLK_LSHIFT)];
+    //    //Handle events on queue
+    //    while (SDL_PollEvent(&e) != 0) {
+    //        const uint8_t *keys = SDL_GetKeyboardState(nullptr);
+    //        bool isShiftPressed = keys[SDL_GetScancodeFromKey(SDLK_LSHIFT)];
 
-            //User requests quit
-            if (e.type == SDL_KEYDOWN) {
-                switch (e.key.keysym.sym) {
-                    case SDLK_ESCAPE:
-                        automaticController.setQuitFlag();
-                        break;
-                    case SDLK_r:
-                        fractalRenderer.setSaveImage(!fractalRenderer.getSaveImage());
-                        fractalRenderer.invalidate();
-                        break;
-                    case SDLK_1:
-                        fractalRenderer.setBlendMode(NO_ALPHA);
-                        fractalRenderer.invalidate();
-                        break;
-                    case SDLK_2:
-                        fractalRenderer.setBlendMode(SMOOTH);
-                        fractalRenderer.invalidate();
-                        break;
-                    case SDLK_3:
-                        fractalRenderer.setBlendMode(EPILEPSY);
-                        fractalRenderer.invalidate();
-                        break;
-                    case SDLK_F1:
-                        fractalRenderer.setTraceMode(DISABLE);
-                        fractalRenderer.invalidate();
-                        break;
-                    case SDLK_F2:
-                        fractalRenderer.setTraceMode(PERSIST);
-                        fractalRenderer.invalidate();
-                        break;
-                    case SDLK_F3:
-                        fractalRenderer.setTraceMode(FADE_FILLED);
-                        fractalRenderer.invalidate();
-                        break;
-                    case SDLK_F4:
-                        fractalRenderer.setTraceMode(FADE_ALL);
-                        fractalRenderer.invalidate();
-                        break;
-                    case SDLK_SPACE:
-                        scoreEnabled = !scoreEnabled;
-                        break;
-                    case SDLK_BACKSPACE:
-                        automaticController.undoLastBeat();
-                        fractalRenderer.invalidate();
-                        break;
-                    default:
-                        if (keyboardController.processKeyboardInput(e.key.keysym.sym, isShiftPressed)) {
-                            fractalRenderer.invalidate();
-                        }
-                        break;
-                }
-            } else if (e.type == SDL_QUIT) {
-                automaticController.setQuitFlag();
-            }
+    //        //User requests quit
+    //        if (e.type == SDL_KEYDOWN) {
+    //            switch (e.key.keysym.sym) {
+    //                case SDLK_ESCAPE:
+    //                    automaticController.setQuitFlag();
+    //                    break;
+    //                case SDLK_r:
+    //                    fractalRenderer.setSaveImage(!fractalRenderer.getSaveImage());
+    //                    fractalRenderer.invalidate();
+    //                    break;
+    //                case SDLK_1:
+    //                    fractalRenderer.setBlendMode(NO_ALPHA);
+    //                    fractalRenderer.invalidate();
+    //                    break;
+    //                case SDLK_2:
+    //                    fractalRenderer.setBlendMode(SMOOTH);
+    //                    fractalRenderer.invalidate();
+    //                    break;
+    //                case SDLK_3:
+    //                    fractalRenderer.setBlendMode(EPILEPSY);
+    //                    fractalRenderer.invalidate();
+    //                    break;
+    //                case SDLK_F1:
+    //                    fractalRenderer.setTraceMode(DISABLE);
+    //                    fractalRenderer.invalidate();
+    //                    break;
+    //                case SDLK_F2:
+    //                    fractalRenderer.setTraceMode(PERSIST);
+    //                    fractalRenderer.invalidate();
+    //                    break;
+    //                case SDLK_F3:
+    //                    fractalRenderer.setTraceMode(FADE_FILLED);
+    //                    fractalRenderer.invalidate();
+    //                    break;
+    //                case SDLK_F4:
+    //                    fractalRenderer.setTraceMode(FADE_ALL);
+    //                    fractalRenderer.invalidate();
+    //                    break;
+    //                case SDLK_SPACE:
+    //                    scoreEnabled = !scoreEnabled;
+    //                    break;
+    //                case SDLK_BACKSPACE:
+    //                    automaticController.undoLastBeat();
+    //                    fractalRenderer.invalidate();
+    //                    break;
+    //                default:
+    //                    if (keyboardController.processKeyboardInput(e.key.keysym.sym, isShiftPressed)) {
+    //                        fractalRenderer.invalidate();
+    //                    }
+    //                    break;
+    //            }
+    //        } else if (e.type == SDL_QUIT) {
+    //            automaticController.setQuitFlag();
+    //        }
+    //    }
+        int key = cv::waitKey(0);
+        if (keyboardController.processKeyboardInput(key, false)) {
+            fractalRenderer.invalidate();
         }
-
         if (keyboardController.doAutomaticTransformations()) {
             fractalRenderer.invalidate();
         }
@@ -175,7 +173,6 @@ int main(int argc, char *args[])
     }
 
     //Free resources and close SDL
-    close();
 
     return 0;
 }

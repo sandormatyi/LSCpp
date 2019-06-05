@@ -15,7 +15,7 @@ KeyboardController::KeyboardController(Fractal &fractal, FractalRenderer &render
 {
 }
 
-bool KeyboardController::processKeyboardInput(SDL_Keycode sym, bool turboMode)
+bool KeyboardController::processKeyboardInput(int sym, bool turboMode)
 {
     const coord_t multiplier = 10;
 
@@ -33,62 +33,62 @@ bool KeyboardController::processKeyboardInput(SDL_Keycode sym, bool turboMode)
 
     bool actionHappened = true;
 
-    switch (sym) {
-        case SDLK_w:
+    switch (sym % 0xFF) {
+        case 'w':
             zoomIn();
             break;
-        case SDLK_s:
+        case 's':
             zoomOut();
             break;
-        case SDLK_UP:
+        case 130:
             moveUp();
             break;
-        case SDLK_DOWN:
+        case 131:
             moveDown();
             break;
-        case SDLK_LEFT:
+        case 132:
             moveLeft();
             break;
-        case SDLK_RIGHT:
+        case 133:
             moveRight();
             break;
-        case SDLK_q:
+        case 'q':
             decreaseResolution();
             break;
-        case SDLK_e:
+        case 'e':
             increaseResolution();
             break;
-        case SDLK_a:
+        case 'a':
             amazingResolution();
             break;
-        case SDLK_d:
+        case 'd':
             shittyResolution();
             break;
-        case SDLK_i:
+        case 'i':
             toggleZoomState(PLUS);
             break;
-        case SDLK_o:
+        case 'o':
             toggleZoomState(MINUS);
             break;
-        case SDLK_k:
+        case 'k':
             toggleNState(PLUS);
             break;
-        case SDLK_l:
+        case 'l':
             toggleNState(MINUS);
             break;
-        case SDLK_n:
+        case 'n':
             toggleRotState(PLUS);
             break;
-        case SDLK_m:
+        case 'm':
             toggleRotState(MINUS);
             break;
-        case SDLK_x:
+        case 'x':
             rotateLeft();
             break;
-        case SDLK_c:
+        case 'c':
             rotateRight();
             break;
-        case SDLK_p:
+        case 'p':
             toggleChangeColorState();
             break;
         default:

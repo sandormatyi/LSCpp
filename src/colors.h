@@ -1,8 +1,6 @@
 #ifndef MANDELBROT_COLORS_H
 #define MANDELBROT_COLORS_H
 
-#include <SDL_pixels.h>
-
 const int COLOR_NUMBER = 128 * 6;
 
 typedef struct
@@ -12,6 +10,14 @@ typedef struct
     float b;
     float a;
 } float_color_t;
+
+typedef struct
+{
+    uint8_t r;
+    uint8_t g;
+    uint8_t b;
+    uint8_t a;
+} SDL_Color;
 
 SDL_Color to_SDL_Color(const float_color_t &c);
 

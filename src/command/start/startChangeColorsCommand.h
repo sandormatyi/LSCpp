@@ -2,7 +2,6 @@
 #define MANDELBROT_STARTCHANGECOLORSCOMMAND_H
 
 
-#include <SDL_types.h>
 #include "../../controller/controller.h"
 #include "../command.h"
 #include "../../colors.h"

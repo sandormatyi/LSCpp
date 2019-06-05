@@ -2,12 +2,12 @@
 #define MANDELBROT_FRACTALRENDERER_H
 
 #include <string>
-#include <SDL_types.h>
-#include <SDL_render.h>
-#include <SDL_atomic.h>
 #include <ctime>
+#include <atomic>
 #include "../fractal/fractal.h"
 #include "renderParams.h"
+#include "opencv2/core/mat.hpp"
+#include "../colors.h"
 
 enum BlendMode
 {
@@ -40,14 +40,14 @@ struct thread_data
     int thread_number;
     coord_t n[max];
     const Fractal *fractal;
-    SDL_atomic_t *counter;
+    std::atomic<uint32_t> *counter;
 };
 
 
 class FractalRenderer
 {
 public:
-    FractalRenderer(Fractal &fractal, SDL_Renderer *renderer, const std::string &folderName);
+    FractalRenderer(Fractal &fractal, cv::InputOutputArray matrix, const std::string &folderName);
     ~FractalRenderer();
 
     void invalidate();
@@ -64,20 +64,20 @@ public:
     void setTraceMode(TraceMode traceMode);
 
 private:
-    Uint64 calculateFractalValues();
-    Uint64 colorPixels();
-    Uint64 saveImage(SDL_Texture *texture);
+    uint64_t calculateFractalValues();
+    uint64_t colorPixels();
+    uint64_t saveImage();
 
-    void drawInfoText(Uint64 calculateTime, Uint64 colorTime, Uint64 saveTime);
+    void drawInfoText(uint64_t calculateTime, uint64_t colorTime, uint64_t saveTime);
     void drawGreenCrosshair();
 
     void colorByHistogram();
     void colorLinear();
-    void colorPixel(const SDL_Color &c, int offset);
+    void colorPixel(const SDL_Color &c, int x, int y);
 
 private:
     Fractal &_fractal;
-    SDL_Renderer *_renderer;
+    cv::InputOutputArray _matrix;
 
     bool _isValid = false;
     bool _enableRender = true;
@@ -91,7 +91,6 @@ private:
 
     int _iterationN = 1;
 
-    Uint8 *_pixels;
     thread_data *_data;
 };
 

@@ -1,4 +1,4 @@
-#include <assert.h>
+#include <stdint.h>
 #include <cmath>
 #include "colors.h"
 #include "fractal/fractal.h"
@@ -7,10 +7,10 @@
 SDL_Color to_SDL_Color(const float_color_t &c)
 {
     return {
-            (Uint8) fmod(c.r, 256.0),
-            (Uint8) fmod(c.g, 256.0),
-            (Uint8) fmod(c.b, 256.0),
-            (Uint8) fmod(c.a, 256.0)
+            (uint8_t) fmod(c.r, 256.0),
+            (uint8_t) fmod(c.g, 256.0),
+            (uint8_t) fmod(c.b, 256.0),
+            (uint8_t) fmod(c.a, 256.0)
     };
 }
 
@@ -35,10 +35,10 @@ float_color_t interpolate(const float_color_t &c1, const float_color_t &c2, doub
 SDL_Color interpolate(const SDL_Color &c1, const SDL_Color &c2, double i)
 {
     SDL_Color c;
-    c.r = (Uint8) ((c1.r * (1.0 - i)) + (c2.r * i));
-    c.g = (Uint8) ((c1.g * (1.0 - i)) + (c2.g * i));
-    c.b = (Uint8) ((c1.b * (1.0 - i)) + (c2.b * i));
-    c.a = (Uint8) ((c1.a * (1.0 - i)) + (c2.a * i));
+    c.r = (uint8_t) ((c1.r * (1.0 - i)) + (c2.r * i));
+    c.g = (uint8_t) ((c1.g * (1.0 - i)) + (c2.g * i));
+    c.b = (uint8_t) ((c1.b * (1.0 - i)) + (c2.b * i));
+    c.a = (uint8_t) ((c1.a * (1.0 - i)) + (c2.a * i));
 
     return c;
 }
@@ -125,7 +125,7 @@ int getColorIndex(double f)
     if (f > 1.0)
         f = 1.0;
 
-    int index = floor(f * (double) COLOR_NUMBER);
+    int index = (int)std::floor((double)(f * (double) COLOR_NUMBER));
     return index;
 }
 
