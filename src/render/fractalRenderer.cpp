@@ -210,13 +210,12 @@ void FractalRenderer::colorByHistogram(cv::InputArray fractalValues)
         total += histogram[i];
     }
 
-    for (int i = 0; i < THREAD_NUMBER; ++i) {
-        const thread_data *threadData = &_data[i];
+    cv::parallel_for_(cv::Range(0, SCREEN_WIDTH*SCREEN_HEIGHT), [&](const cv::Range& range) {
+        for (int i = range.start; i < range.end; ++i) {
+            const unsigned int x = i % TEXTURE_WIDTH;
+            const unsigned int y = i / TEXTURE_WIDTH;
 
-        for (int j = 0; j < thread_data::max; ++j) {
-            coord_t n = threadData->n[j];
-            const unsigned int x = j % TEXTURE_WIDTH;
-            const unsigned int y = j / TEXTURE_WIDTH + threadData->thread_number * TEXTURE_HEIGHT / THREAD_NUMBER;
+            coord_t n = fractalValues.getMat().at<coord_t>(y, x);
 
             if (n > 0) {
                 coord_t hue = 0.0;
@@ -230,7 +229,7 @@ void FractalRenderer::colorByHistogram(cv::InputArray fractalValues)
                 colorPixel(to_SDL_Color(c), x, y);
             }
         }
-    }
+    });
     delete[] histogram;
 }
 
