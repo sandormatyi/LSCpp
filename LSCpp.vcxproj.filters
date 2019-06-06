@@ -126,6 +126,8 @@
     <ClCompile Include="src\render\renderedText.cpp">
       <Filter>render</Filter>
     </ClCompile>
+    <ClCompile Include="src\colors.cpp" />
+    <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\controller\automaticController.h">
@@ -233,5 +235,7 @@
     <ClInclude Include="src\render\renderParams.h">
       <Filter>render</Filter>
     </ClInclude>
+    <ClInclude Include="src\colors.h" />
+    <ClInclude Include="src\types.h" />
   </ItemGroup>
 </Project>
