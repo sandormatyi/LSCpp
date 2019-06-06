@@ -61,7 +61,7 @@ private:
     ColorMode _colorMode = HISTOGRAM;
     TraceMode _traceMode = DISABLE;
 
-    int _iterationN = 1;
+    unsigned int _iterationN = 1;
 };
 
 

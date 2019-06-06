@@ -54,10 +54,6 @@ void FractalRenderer::render()
     if (_isValid)
         return;
 
-    //Clear screen
-    //SDL_SetRenderDrawColor(_renderer, 0x00, 0x00, 0x00, 0x00);
-    //SDL_RenderClear(_renderer);
-
     uint64_t calculateTime = 0;
     uint64_t colorTime = 0;
     uint64_t saveTime = 0;
@@ -95,8 +91,7 @@ void FractalRenderer::drawInfoText(uint64_t calculateTime, uint64_t colorTime, u
     ss << "Resolution: " << _fractal.getMaxN() << std::endl;
     ss << "Rotation: " << _fractal.getRotAngle() << std::endl;
     ss << "Render time: " << calculateTime + colorTime + saveTime << " ms (" << calculateTime << " + " << colorTime << " + "
-       << saveTime << ")" << std::endl;
-    // ss << "Threads: " << THREAD_NUMBER << std::endl;
+        << saveTime << ")" << std::endl;
     ss << "Color mode: " << to_string(_colorMode) << std::endl;
     ss << "Blend mode: " << to_string(_blendMode) << std::endl;
     ss << "Trace mode: " << to_string(_traceMode) << std::endl;
@@ -110,9 +105,8 @@ void FractalRenderer::drawInfoText(uint64_t calculateTime, uint64_t colorTime, u
 uint64_t FractalRenderer::calculateFractalValues(cv::OutputArray result)
 {
     const auto start = std::chrono::high_resolution_clock::now();
-    std::atomic<uint32_t> counter = THREAD_NUMBER;
 
-    cv::parallel_for_(cv::Range(0, SCREEN_WIDTH*SCREEN_HEIGHT), [&](const cv::Range& range) {
+    cv::parallel_for_(cv::Range(0, SCREEN_WIDTH * SCREEN_HEIGHT), [&](const cv::Range& range) {
         for (int r = range.start; r < range.end; r++) {
             int x = r % _matrix.cols();
             int y = r / _matrix.cols();
@@ -121,25 +115,6 @@ uint64_t FractalRenderer::calculateFractalValues(cv::OutputArray result)
             result.getMat().at<coord_t>(y, x) = value;
         }
     });
-
-//#pragma omp parallel for
-//    for (int r = range.start; r < range.end; r++) {
-//        int y = r / _matrix.cols();
-//        int x = r % _matrix.cols();
-//
-//        coord_t value = _fractal.getFractalValue(x, SCREEN_WIDTH, y, SCREEN_HEIGHT);
-//        result.getMat().at<coord_t>(y, x) = value;
-//    }
-
-    //for (int i = 0; i < THREAD_NUMBER; ++i) {
-    //    _data[i].fractal = &_fractal;
-    //    _data[i].thread_number = i;
-    //    _data[i].counter = &counter;
-    //    std::thread thread(drawPointsInThread, &_data[i]);
-    //    thread.join(); // TODO: Ez gányolás
-    //}
-
-    //while (counter > 0);
 
     const auto end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> diff = end - start;
@@ -172,7 +147,7 @@ uint64_t FractalRenderer::colorPixels(cv::InputArray fractalValues)
 
 void FractalRenderer::colorByHistogram(cv::InputArray fractalValues)
 {
-    const int maxN = (int) (_fractal.getMaxN() + 1);
+    const int maxN = (int)(_fractal.getMaxN() + 1);
 
     int* histogram = new int[maxN];
     memset(histogram, 0, maxN * sizeof(int));
@@ -244,9 +219,7 @@ void FractalRenderer::colorPixel(const uint8_color_t &c, int x, int y)
 
     // TODO: Remove FADE_FILLED
     if (_traceMode == FADE_FILLED) {
-        p[0] *= _fadeFactor;
-        p[1] *= _fadeFactor;
-        p[2] *= _fadeFactor;
+        p *= _fadeFactor;
     }
 
     switch (_blendMode) {
@@ -257,16 +230,16 @@ void FractalRenderer::colorPixel(const uint8_color_t &c, int x, int y)
             p[3] = c.a;
             break;
         case EPILEPSY:
-            p[0] += (uint8_t) (floatAlpha * c.b);
-            p[1] += (uint8_t) (floatAlpha * c.g);
-            p[2] += (uint8_t) (floatAlpha * c.r);
-            p[3] = (uint8_t) (floatAlpha * c.a);
+            p[0] += (uint8_t)(floatAlpha * c.b);
+            p[1] += (uint8_t)(floatAlpha * c.g);
+            p[2] += (uint8_t)(floatAlpha * c.r);
+            p[3] = (uint8_t)(floatAlpha * c.a);
             break;
         case SMOOTH:
-            p[0] = (uint8_t) ((oldAlpha * p[0]) + (floatAlpha * c.b));
-            p[1] = (uint8_t) ((oldAlpha * p[1]) + (floatAlpha * c.g));
-            p[2] = (uint8_t) ((oldAlpha * p[2]) + (floatAlpha * c.r));
-            p[3] = (uint8_t) (floatAlpha * c.a);
+            p[0] = (uint8_t)((oldAlpha * p[0]) + (floatAlpha * c.b));
+            p[1] = (uint8_t)((oldAlpha * p[1]) + (floatAlpha * c.g));
+            p[2] = (uint8_t)((oldAlpha * p[2]) + (floatAlpha * c.r));
+            p[3] = (uint8_t)(floatAlpha * c.a);
             break;
         default:
             break;
@@ -301,9 +274,9 @@ void FractalRenderer::drawGreenCrosshair()
 {
     const cv::Scalar colorGreen = cv::Scalar(50, 255, 50);
 
-    cv::line(_matrix, 
-        { TEXTURE_WIDTH / 2 - 10, TEXTURE_HEIGHT / 2 - 10 }, 
-        { TEXTURE_WIDTH / 2 + 10, TEXTURE_HEIGHT / 2 + 10 }, 
+    cv::line(_matrix,
+        { TEXTURE_WIDTH / 2 - 10, TEXTURE_HEIGHT / 2 - 10 },
+        { TEXTURE_WIDTH / 2 + 10, TEXTURE_HEIGHT / 2 + 10 },
         colorGreen);
 
     cv::line(_matrix,
