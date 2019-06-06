@@ -4,9 +4,9 @@
 #include <string>
 #include <ctime>
 #include <atomic>
+#include <opencv2/core.hpp>
 #include "../fractal/fractal.h"
 #include "renderParams.h"
-#include <opencv2/core/mat.hpp>
 #include "../colors.h"
 #include "../types.h"
 

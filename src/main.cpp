@@ -96,71 +96,13 @@ int main(int argc, char *args[])
 
 
     //While application is running
-    while (!automaticController.isQuitFlagSet()) {
-    //    //Handle events on queue
-    //    while (SDL_PollEvent(&e) != 0) {
-    //        const uint8_t *keys = SDL_GetKeyboardState(nullptr);
-    //        bool isShiftPressed = keys[SDL_GetScancodeFromKey(SDLK_LSHIFT)];
-
-    //        //User requests quit
-    //        if (e.type == SDL_KEYDOWN) {
-    //            switch (e.key.keysym.sym) {
-    //                case SDLK_ESCAPE:
-    //                    automaticController.setQuitFlag();
-    //                    break;
-    //                case SDLK_r:
-    //                    fractalRenderer.setSaveImage(!fractalRenderer.getSaveImage());
-    //                    fractalRenderer.invalidate();
-    //                    break;
-    //                case SDLK_1:
-    //                    fractalRenderer.setBlendMode(NO_ALPHA);
-    //                    fractalRenderer.invalidate();
-    //                    break;
-    //                case SDLK_2:
-    //                    fractalRenderer.setBlendMode(SMOOTH);
-    //                    fractalRenderer.invalidate();
-    //                    break;
-    //                case SDLK_3:
-    //                    fractalRenderer.setBlendMode(EPILEPSY);
-    //                    fractalRenderer.invalidate();
-    //                    break;
-    //                case SDLK_F1:
-    //                    fractalRenderer.setTraceMode(DISABLE);
-    //                    fractalRenderer.invalidate();
-    //                    break;
-    //                case SDLK_F2:
-    //                    fractalRenderer.setTraceMode(PERSIST);
-    //                    fractalRenderer.invalidate();
-    //                    break;
-    //                case SDLK_F3:
-    //                    fractalRenderer.setTraceMode(FADE_FILLED);
-    //                    fractalRenderer.invalidate();
-    //                    break;
-    //                case SDLK_F4:
-    //                    fractalRenderer.setTraceMode(FADE_ALL);
-    //                    fractalRenderer.invalidate();
-    //                    break;
-    //                case SDLK_SPACE:
-    //                    scoreEnabled = !scoreEnabled;
-    //                    break;
-    //                case SDLK_BACKSPACE:
-    //                    automaticController.undoLastBeat();
-    //                    fractalRenderer.invalidate();
-    //                    break;
-    //                default:
-    //                    if (keyboardController.processKeyboardInput(e.key.keysym.sym, isShiftPressed)) {
-    //                        fractalRenderer.invalidate();
-    //                    }
-    //                    break;
-    //            }
-    //        } else if (e.type == SDL_QUIT) {
-    //            automaticController.setQuitFlag();
-    //        }
-    //    }
+    while (!Controller::isQuitFlagSet()) {
         int key = cv::waitKeyEx(1);
-        std::bitset<32> binary(key);
-        std::cout << key << " pressed. (" << binary.to_string() << ") " << std::endl;
-        if (key > 0 && keyboardController.processKeyboardInput(key, false)) {
+        if (key > 0) {
+            std::bitset<32> binary(key);
+            std::cout << key << " pressed (" << (char)key << " - " << binary.to_string() << ") " << std::endl;
+        }
+        if (key > 0 && keyboardController.processKeyboardInput(key)) {
             fractalRenderer.invalidate();
         }
         if (keyboardController.doAutomaticTransformations()) {

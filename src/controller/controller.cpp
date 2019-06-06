@@ -5,10 +5,11 @@
 #include "../fractal/fractal.h"
 #include "../render/fractalRenderer.h"
 
-Controller::Controller(Fractal &fractal, FractalRenderer &renderer) :
-        _fractal(fractal), _renderer(renderer)
-{
+bool Controller::_quit = false;
 
+Controller::Controller(Fractal &fractal, FractalRenderer &renderer) :
+    _fractal(fractal), _renderer(renderer)
+{
 }
 
 Fractal & Controller::getFractal()
@@ -88,7 +89,7 @@ void Controller::setDeltaColor(float_color_t color)
     _deltaColor = color;
 }
 
-bool Controller::isQuitFlagSet() const
+bool Controller::isQuitFlagSet()
 {
     return _quit;
 }

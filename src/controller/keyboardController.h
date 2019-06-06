@@ -1,7 +1,6 @@
 #ifndef MANDELBROT_KEYBOARDCONTROLLER_H
 #define MANDELBROT_KEYBOARDCONTROLLER_H
 
-
 #include "controller.h"
 
 
@@ -19,7 +18,8 @@ public:
     KeyboardController(Fractal &fractal, FractalRenderer &renderer, coord_t defaultZoomSpeed,
                        coord_t defaultMoveSpeed, coord_t defaultDeltaN, coord_t defaultDeltaRot,
                        float_color_t defaultDeltaColor);
-    bool processKeyboardInput(int sym, bool turboMode);
+
+    bool processKeyboardInput(int sym);
 
     void moveLeft();
     void moveRight();

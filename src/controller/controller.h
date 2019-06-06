@@ -26,13 +26,13 @@ public:
 
     bool doAutomaticTransformations();
 
-    bool isQuitFlagSet() const;
-    void setQuitFlag();
+    static bool isQuitFlagSet();
+    static void setQuitFlag();
 
 protected:
     Fractal &_fractal;
     FractalRenderer &_renderer;
-    bool _quit = false;
+    static bool _quit;
 
     coord_t _zoomSpeed = 1;
     coord_t _deltaN = 0;
