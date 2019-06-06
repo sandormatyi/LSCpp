@@ -9,7 +9,8 @@ void textToTexture(const std::string& text, cv::InputOutputArray texture, int te
     std::string line;
     int y = 25;
     while (!std::getline(ss, line).eof()) {
-        cv::putText(texture, line, cv::Point(0, y), cv::FONT_HERSHEY_DUPLEX, 0.6, 0);
+        cv::putText(texture, line, cv::Point(0, y), cv::FONT_HERSHEY_DUPLEX, 0.6, 0, 2);
+        cv::putText(texture, line, cv::Point(0, y), cv::FONT_HERSHEY_DUPLEX, 0.6, { 255, 255, 255 });
         y += 25;
     }
 }

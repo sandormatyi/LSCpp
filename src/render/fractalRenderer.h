@@ -58,7 +58,7 @@ private:
 
     coord_t _fadeFactor = 0.75;
     BlendMode _blendMode = NO_ALPHA;
-    ColorMode _colorMode = LINEAR;
+    ColorMode _colorMode = HISTOGRAM;
     TraceMode _traceMode = DISABLE;
 
     int _iterationN = 1;
