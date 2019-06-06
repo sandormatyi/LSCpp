@@ -74,7 +74,7 @@ void FractalRenderer::render()
     _matrix.copyTo(copyWithText);
 
     drawInfoText(copyWithText, calculateTime, colorTime, saveTime);
-    drawGreenCrosshair();
+    drawGreenCrosshair(copyWithText);
 
     cv::imshow(_fractal.getFractalName(), copyWithText);
 
@@ -273,19 +273,19 @@ uint64_t FractalRenderer::saveImage(cv::InputArray image)
     return (uint64_t)(diff.count() * 1000);
 }
 
-void FractalRenderer::drawGreenCrosshair()
+void FractalRenderer::drawGreenCrosshair(cv::InputOutputArray result)
 {
     const cv::Scalar colorGreen = cv::Scalar(50, 255, 50);
 
-    cv::line(_matrix,
+    cv::line(result,
         { TEXTURE_WIDTH / 2 - 10, TEXTURE_HEIGHT / 2 - 10 },
         { TEXTURE_WIDTH / 2 + 10, TEXTURE_HEIGHT / 2 + 10 },
-        colorGreen);
+        colorGreen, 1, cv::LineTypes::LINE_AA);
 
-    cv::line(_matrix,
+    cv::line(result,
         { TEXTURE_WIDTH / 2 - 10, TEXTURE_HEIGHT / 2 + 10 },
         { TEXTURE_WIDTH / 2 + 10, TEXTURE_HEIGHT / 2 - 10 },
-        colorGreen);
+        colorGreen, 1, cv::LineTypes::LINE_AA);
 }
 
 void FractalRenderer::setEnableRender(bool enable)

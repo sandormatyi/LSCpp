@@ -41,7 +41,7 @@ private:
     uint64_t saveImage(cv::InputArray image);
 
     void drawInfoText(cv::InputOutputArray result, uint64_t calculateTime, uint64_t colorTime, uint64_t saveTime);
-    void drawGreenCrosshair();
+    void drawGreenCrosshair(cv::InputOutputArray result);
 
     void colorByHistogram(cv::InputArray fractalValues);
     void colorLinear(cv::InputArray fractalValues);
