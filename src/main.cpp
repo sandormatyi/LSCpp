@@ -18,72 +18,12 @@
 
 bool scoreEnabled = false;
 
-/*
-//Starts up SDL and creates window
-bool init();
-
-//Frees media and shuts down SDL
-void close();
-
-//The window we'll be rendering to
-SDL_Window *gWindow = nullptr;
-
-//The window renderer
-SDL_Renderer *gRenderer = nullptr;
-
-bool init()
-{
-    //Initialize SDL
-    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-        std::cout << "SDL could not initialize! SDL Error: " << SDL_GetError() << std::endl;
-        return false;
-    }
-
-    //Create window
-    gWindow = SDL_CreateWindow("Mandelbrot fractal", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH,
-                               SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
-    if (gWindow == nullptr) {
-        std::cout << "Window could not be created! SDL Error: " << SDL_GetError() << std::endl;
-        return false;
-    }
-
-
-    //Create renderer for window
-    gRenderer = SDL_CreateRenderer(gWindow, -1, SDL_RENDERER_ACCELERATED);
-    if (gRenderer == nullptr) {
-        std::cout << "Renderer could not be created! SDL Error: " << SDL_GetError() << std::endl;
-        return false;
-    }
-
-    //bitmap = SDL_CreateTexture(gRenderer, SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_STATIC, SCREEN_WIDTH, SCREEN_HEIGHT);
-
-    initColors();
-    initSDLTTF();
-
-    //Initialize renderer color
-    SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
-
-    return true;
-}
-
-void close()
-{
-    //Destroy window
-    SDL_DestroyRenderer(gRenderer);
-    SDL_DestroyWindow(gWindow);
-    gWindow = nullptr;
-    gRenderer = nullptr;
-
-    SDL_Quit();
-}
-*/
-
 
 int main(int argc, char *args[])
 {
     initColors();
 
-    Mandelbrot m(-0.302544, -0.043626, 4.45019, 464);
+    Mandelbrot m(-0.302544, -1.43626, 4.45019, 464);
     //ExternalImage m(0, 0, 1, 64, "budi_6.png", SDL_GetWindowSurface(gWindow));
 
     cv::Mat img(SCREEN_HEIGHT, SCREEN_WIDTH, CV_8UC4);
@@ -97,21 +37,21 @@ int main(int argc, char *args[])
 
     //While application is running
     while (!Controller::isQuitFlagSet()) {
-        int key = cv::waitKeyEx(10);
-
         fractalRenderer.render();
 
-        if (key < 0)
-            continue;
-
-        std::bitset<32> binary(key);
-        std::cout << (char)key << " (" << key << ") " << std::endl;
-        if (keyboardController.processKeyboardInput(key)) {
-            fractalRenderer.invalidate();
+        int key = cv::waitKeyEx(10);
+        if (key > 0) {
+            std::bitset<32> binary(key);
+            std::cout << (char)key << " (" << key << ") " << std::endl;
+            if (keyboardController.processKeyboardInput(key)) {
+                fractalRenderer.invalidate();
+            }
         }
+
         if (keyboardController.doAutomaticTransformations()) {
             fractalRenderer.invalidate();
         }
+
         if (scoreEnabled) {
             automaticController.step();
             automaticController.doAutomaticTransformations();
