@@ -90,19 +90,23 @@ int main(int argc, char *args[])
     FractalRenderer fractalRenderer(m, img, "Mosolypersely");
 
     AutomaticController automaticController(m, fractalRenderer, "testCommandFile.mnd");
-    automaticController.initialize();
+    //automaticController.initialize();
 
     KeyboardController keyboardController(m, fractalRenderer, 1.05, 0.05, 1, 2, {1, 2, 3, 0});
 
 
     //While application is running
     while (!Controller::isQuitFlagSet()) {
-        int key = cv::waitKeyEx(1);
-        if (key > 0) {
-            std::bitset<32> binary(key);
-            std::cout << key << " pressed (" << (char)key << " - " << binary.to_string() << ") " << std::endl;
-        }
-        if (key > 0 && keyboardController.processKeyboardInput(key)) {
+        int key = cv::waitKeyEx(10);
+
+        fractalRenderer.render();
+
+        if (key < 0)
+            continue;
+
+        std::bitset<32> binary(key);
+        std::cout << (char)key << " (" << key << ") " << std::endl;
+        if (keyboardController.processKeyboardInput(key)) {
             fractalRenderer.invalidate();
         }
         if (keyboardController.doAutomaticTransformations()) {
@@ -113,15 +117,10 @@ int main(int argc, char *args[])
             automaticController.doAutomaticTransformations();
             fractalRenderer.invalidate();
         }
-
-        fractalRenderer.render();
     }
 
-    //Free resources and close SDL
+    //Free resources and exit the application
+    cv::destroyAllWindows();
 
     return 0;
 }
-
-
-
-
