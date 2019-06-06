@@ -38,9 +38,9 @@ public:
 private:
     uint64_t calculateFractalValues(cv::OutputArray result);
     uint64_t colorPixels(cv::InputArray fractalValues);
-    uint64_t saveImage();
+    uint64_t saveImage(cv::InputArray image);
 
-    void drawInfoText(uint64_t calculateTime, uint64_t colorTime, uint64_t saveTime);
+    void drawInfoText(cv::InputOutputArray result, uint64_t calculateTime, uint64_t colorTime, uint64_t saveTime);
     void drawGreenCrosshair();
 
     void colorByHistogram(cv::InputArray fractalValues);

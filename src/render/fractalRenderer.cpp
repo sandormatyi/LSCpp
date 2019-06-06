@@ -66,21 +66,24 @@ void FractalRenderer::render()
         colorTime = colorPixels(fractalValues);
 
         if (_saveImage) {
-            saveTime = saveImage();
+            saveTime = saveImage(_matrix);
         }
     }
 
-    drawInfoText(calculateTime, colorTime, saveTime);
+    cv::Mat copyWithText;
+    _matrix.copyTo(copyWithText);
+
+    drawInfoText(copyWithText, calculateTime, colorTime, saveTime);
     drawGreenCrosshair();
 
-    cv::imshow("Main window", _matrix);
+    cv::imshow(_fractal.getFractalName(), copyWithText);
 
     _iterationN++;
 
     _isValid = true;
 }
 
-void FractalRenderer::drawInfoText(uint64_t calculateTime, uint64_t colorTime, uint64_t saveTime)
+void FractalRenderer::drawInfoText(cv::InputOutputArray result, uint64_t calculateTime, uint64_t colorTime, uint64_t saveTime)
 {
     std::stringstream ss;
     // ss << _fractal.getFractalName() << std::endl;
@@ -99,7 +102,7 @@ void FractalRenderer::drawInfoText(uint64_t calculateTime, uint64_t colorTime, u
         ss << "Image number " << _iterationN - 1;
     }
 
-    textToTexture(ss.str(), _matrix, 600);
+    textToTexture(ss.str(), result);
 }
 
 uint64_t FractalRenderer::calculateFractalValues(cv::OutputArray result)
@@ -162,7 +165,7 @@ void FractalRenderer::colorByHistogram(cv::InputArray fractalValues)
     for (int i = 0; i < maxN; ++i) {
         total += histogram[i];
     }
-
+ 
     cv::parallel_for_(cv::Range(0, SCREEN_WIDTH*SCREEN_HEIGHT), [&](const cv::Range& range) {
         for (int i = range.start; i < range.end; ++i) {
             const unsigned int x = i % TEXTURE_WIDTH;
@@ -251,7 +254,7 @@ bool FractalRenderer::getSaveImage() const
     return _saveImage;
 }
 
-uint64_t FractalRenderer::saveImage()
+uint64_t FractalRenderer::saveImage(cv::InputArray image)
 {
     const auto start = std::chrono::high_resolution_clock::now();
 
@@ -263,7 +266,7 @@ uint64_t FractalRenderer::saveImage()
 
     std::string filePath = _folderName + "/" + std::to_string(_iterationN) + ".png";
 
-    cv::imwrite(filePath, _matrix);
+    cv::imwrite(filePath, image);
 
     const auto end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> diff = end - start;

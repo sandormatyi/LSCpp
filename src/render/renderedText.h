@@ -4,7 +4,7 @@
 #include <string>
 #include <opencv2/core/core.hpp>
 
-void textToTexture(const std::string& text, cv::InputOutputArray texture, int textAreaSize);
+void textToTexture(const std::string& text, cv::InputOutputArray texture);
 
 
 #endif //MANDELBROT_RENDEREDTEXT_H
