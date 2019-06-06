@@ -235,7 +235,7 @@ void FractalRenderer::colorLinear(cv::InputArray fractalValues)
     });
 }
 
-void FractalRenderer::colorPixel(const SDL_Color &c, int x, int y)
+void FractalRenderer::colorPixel(const uint8_color_t &c, int x, int y)
 {
     float floatAlpha = c.a / 255.0;
     float oldAlpha = 1 - floatAlpha;

@@ -1,4 +1,6 @@
 #include "directionMoveCommand.h"
+#include "../../controller/controller.h"
+#include "../../fractal/fractal.h"
 
 DirectionMoveCommand::DirectionMoveCommand(Direction direction, coord_t amount) : _direction(direction),
                                                                                   _amount(amount) {}

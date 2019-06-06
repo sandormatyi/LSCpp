@@ -1,6 +1,11 @@
 #include "setTraceModeCommand.h"
+#include "../../controller/controller.h"
+#include "../../render/fractalRenderer.h"
 
-SetTraceModeCommand::SetTraceModeCommand(TraceMode traceMode) : _traceMode(traceMode) {}
+SetTraceModeCommand::SetTraceModeCommand(TraceMode traceMode) :
+    _traceMode(traceMode)
+{
+}
 
 void SetTraceModeCommand::executeOnce(Controller &c)
 {

@@ -1,4 +1,6 @@
 #include "changePositionCommand.h"
+#include "../../controller/controller.h"
+#include "../../fractal/fractal.h"
 
 ChangePositionCommand::ChangePositionCommand(coord_t x, coord_t y)
 {

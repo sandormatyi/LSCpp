@@ -14,6 +14,7 @@
 #include "fractal/externalImage.h"
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui.hpp>
+#include <bitset>
 
 bool scoreEnabled = false;
 
@@ -156,7 +157,9 @@ int main(int argc, char *args[])
     //            automaticController.setQuitFlag();
     //        }
     //    }
-        int key = cv::waitKey(1);
+        int key = cv::waitKeyEx(1);
+        std::bitset<32> binary(key);
+        std::cout << key << " pressed. (" << binary.to_string() << ") " << std::endl;
         if (key > 0 && keyboardController.processKeyboardInput(key, false)) {
             fractalRenderer.invalidate();
         }

@@ -1,11 +1,9 @@
 #ifndef MANDELBROT_COMMAND_H
 #define MANDELBROT_COMMAND_H
 
+#include "../types.h"
 
-#include <string>
-#include "../fractal/mandelbrot.h"
-#include "../controller/controller.h"
-
+class Controller;
 
 class Command
 {

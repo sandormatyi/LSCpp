@@ -1,6 +1,8 @@
 #include <cmath>
 #include "keyboardController.h"
 #include "../colors.h"
+#include "../fractal/fractal.h"
+#include "../render/fractalRenderer.h"
 
 
 KeyboardController::KeyboardController(Fractal &fractal, FractalRenderer &renderer, coord_t defaultZoomSpeed,

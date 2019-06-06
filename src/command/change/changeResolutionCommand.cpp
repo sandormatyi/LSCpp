@@ -1,4 +1,6 @@
 #include "changeResolutionCommand.h"
+#include "../../controller/controller.h"
+#include "../../fractal/fractal.h"
 
 ChangeResolutionCommand::ChangeResolutionCommand(coord_t amount) :
         _amount(amount),

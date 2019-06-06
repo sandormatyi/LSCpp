@@ -1,10 +1,11 @@
 #include "setRotationCommand.h"
+#include "../../controller/controller.h"
+#include "../../fractal/fractal.h"
 
 SetRotationCommand::SetRotationCommand(coord_t amount) :
-        _oldAmount(0),
-        _amount(amount)
+    _oldAmount(0),
+    _amount(amount)
 {
-
 }
 
 void SetRotationCommand::executeOnce(Controller &c)

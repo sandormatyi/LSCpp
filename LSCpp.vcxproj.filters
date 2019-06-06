@@ -2,28 +2,28 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="controller">
-      <UniqueIdentifier>{37320ea0-616b-45a5-a2d2-7588599d03da}</UniqueIdentifier>
+      <UniqueIdentifier>{6c67363c-9114-4cc5-9c95-be0000258e7d}</UniqueIdentifier>
     </Filter>
     <Filter Include="command">
-      <UniqueIdentifier>{1e394077-a36d-4a4f-a5a3-e14970d52ec3}</UniqueIdentifier>
+      <UniqueIdentifier>{1c99391c-b063-475d-ae9a-3596ba921a51}</UniqueIdentifier>
     </Filter>
     <Filter Include="command\stop">
-      <UniqueIdentifier>{dea38e81-36a7-4cd9-8ef7-35cf68db4049}</UniqueIdentifier>
+      <UniqueIdentifier>{3a78b725-02dd-478d-b46f-53029fa1e732}</UniqueIdentifier>
     </Filter>
     <Filter Include="command\change">
-      <UniqueIdentifier>{e29f4942-9cf2-4ea2-b619-c16f9212666a}</UniqueIdentifier>
+      <UniqueIdentifier>{cd8974b1-5b6c-4b3d-95f1-ad4a7e353a29}</UniqueIdentifier>
     </Filter>
     <Filter Include="command\set">
-      <UniqueIdentifier>{38ab140e-6584-4fbb-a0ce-9a1397653d3b}</UniqueIdentifier>
+      <UniqueIdentifier>{320f513a-7d01-44a5-ac86-57079a0921d2}</UniqueIdentifier>
     </Filter>
     <Filter Include="command\start">
-      <UniqueIdentifier>{390b7ddc-1fec-40a3-bbb6-b6e05584ab2f}</UniqueIdentifier>
+      <UniqueIdentifier>{fb3aa488-a47b-4674-8c1f-084194441460}</UniqueIdentifier>
     </Filter>
     <Filter Include="fractal">
-      <UniqueIdentifier>{be8d3f8c-8b74-422f-a0cd-b737878477d3}</UniqueIdentifier>
+      <UniqueIdentifier>{8a9ab53e-b545-4611-996a-500f612cb415}</UniqueIdentifier>
     </Filter>
     <Filter Include="render">
-      <UniqueIdentifier>{df458d4b-ef2a-4a83-9127-ae8c2519a5fb}</UniqueIdentifier>
+      <UniqueIdentifier>{3d5d57d8-7f4f-4489-801d-af55e34aca82}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -39,7 +39,19 @@
     <ClCompile Include="src\command\logCommand.cpp">
       <Filter>command</Filter>
     </ClCompile>
+    <ClCompile Include="src\command\stop\stopChangeColorsCommand.cpp">
+      <Filter>command\stop</Filter>
+    </ClCompile>
+    <ClCompile Include="src\command\stop\stopChangeResolutionCommand.cpp">
+      <Filter>command\stop</Filter>
+    </ClCompile>
     <ClCompile Include="src\command\stop\stopProgramCommand.cpp">
+      <Filter>command\stop</Filter>
+    </ClCompile>
+    <ClCompile Include="src\command\stop\stopRotateCommand.cpp">
+      <Filter>command\stop</Filter>
+    </ClCompile>
+    <ClCompile Include="src\command\stop\stopZoomCommand.cpp">
       <Filter>command\stop</Filter>
     </ClCompile>
     <ClCompile Include="src\command\change\changeColorsCommand.cpp">
@@ -87,18 +99,6 @@
     <ClCompile Include="src\command\set\setZoomCommand.cpp">
       <Filter>command\set</Filter>
     </ClCompile>
-    <ClCompile Include="src\command\stop\stopChangeColorsCommand.cpp">
-      <Filter>command\stop</Filter>
-    </ClCompile>
-    <ClCompile Include="src\command\stop\stopChangeResolutionCommand.cpp">
-      <Filter>command\stop</Filter>
-    </ClCompile>
-    <ClCompile Include="src\command\stop\stopRotateCommand.cpp">
-      <Filter>command\stop</Filter>
-    </ClCompile>
-    <ClCompile Include="src\command\stop\stopZoomCommand.cpp">
-      <Filter>command\stop</Filter>
-    </ClCompile>
     <ClCompile Include="src\command\start\startChangeColorsCommand.cpp">
       <Filter>command\start</Filter>
     </ClCompile>
@@ -126,8 +126,6 @@
     <ClCompile Include="src\render\renderedText.cpp">
       <Filter>render</Filter>
     </ClCompile>
-    <ClCompile Include="src\colors.cpp" />
-    <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\controller\automaticController.h">
@@ -145,7 +143,19 @@
     <ClInclude Include="src\command\logCommand.h">
       <Filter>command</Filter>
     </ClInclude>
+    <ClInclude Include="src\command\stop\stopChangeColorsCommand.h">
+      <Filter>command\stop</Filter>
+    </ClInclude>
+    <ClInclude Include="src\command\stop\stopChangeResolutionCommand.h">
+      <Filter>command\stop</Filter>
+    </ClInclude>
     <ClInclude Include="src\command\stop\stopProgramCommand.h">
+      <Filter>command\stop</Filter>
+    </ClInclude>
+    <ClInclude Include="src\command\stop\stopRotateCommand.h">
+      <Filter>command\stop</Filter>
+    </ClInclude>
+    <ClInclude Include="src\command\stop\stopZoomCommand.h">
       <Filter>command\stop</Filter>
     </ClInclude>
     <ClInclude Include="src\command\change\changeColorsCommand.h">
@@ -193,18 +203,6 @@
     <ClInclude Include="src\command\set\setZoomCommand.h">
       <Filter>command\set</Filter>
     </ClInclude>
-    <ClInclude Include="src\command\stop\stopChangeColorsCommand.h">
-      <Filter>command\stop</Filter>
-    </ClInclude>
-    <ClInclude Include="src\command\stop\stopChangeResolutionCommand.h">
-      <Filter>command\stop</Filter>
-    </ClInclude>
-    <ClInclude Include="src\command\stop\stopRotateCommand.h">
-      <Filter>command\stop</Filter>
-    </ClInclude>
-    <ClInclude Include="src\command\stop\stopZoomCommand.h">
-      <Filter>command\stop</Filter>
-    </ClInclude>
     <ClInclude Include="src\command\start\startChangeColorsCommand.h">
       <Filter>command\start</Filter>
     </ClInclude>
@@ -235,6 +233,5 @@
     <ClInclude Include="src\render\renderParams.h">
       <Filter>render</Filter>
     </ClInclude>
-    <ClInclude Include="src\colors.h" />
   </ItemGroup>
 </Project>

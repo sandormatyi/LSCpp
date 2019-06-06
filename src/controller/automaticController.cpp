@@ -26,6 +26,8 @@
 #include "../command/set/setEnableRenderCommand.h"
 #include "../command/set/setFadeFactorCommand.h"
 #include "../command/logCommand.h"
+#include "../fractal/fractal.h"
+#include "../render/fractalRenderer.h"
 
 
 AutomaticController::AutomaticController(Fractal &fractal, FractalRenderer &renderer, const std::string &fileName) :

@@ -1,4 +1,6 @@
 #include "changeRotationCommand.h"
+#include "../../controller/controller.h"
+#include "../../fractal/fractal.h"
 
 ChangeRotationCommand::ChangeRotationCommand(coord_t amount) : _amount(amount) {}
 

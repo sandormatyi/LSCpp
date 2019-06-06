@@ -1,4 +1,6 @@
 #include "changeZoomCommand.h"
+#include "../../controller/controller.h"
+#include "../../fractal/fractal.h"
 
 ChangeZoomCommand::ChangeZoomCommand(coord_t amount) :
         _amount(amount)

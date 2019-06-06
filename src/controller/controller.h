@@ -1,10 +1,10 @@
 #ifndef MANDELBROT_CONTROLLER_H
 #define MANDELBROT_CONTROLLER_H
 
-
-#include "../fractal/mandelbrot.h"
-#include "../render/fractalRenderer.h"
 #include "../colors.h"
+
+class Fractal;
+class FractalRenderer;
 
 class Controller
 {

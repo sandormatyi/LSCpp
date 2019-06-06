@@ -196,6 +196,7 @@
     <ClInclude Include="src\render\fractalRenderer.h" />
     <ClInclude Include="src\render\renderedText.h" />
     <ClInclude Include="src\render\renderParams.h" />
+    <ClInclude Include="src\types.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -17,7 +17,7 @@ void textToTexture(const std::string& text, cv::InputOutputArray texture, int te
 /*
 RenderedText textToTexture(const std::string &text, SDL_Renderer *renderer, int textAreaSize)
 {
-    SDL_Color textColor = { 255, 255, 255 };
+    uint8_color_t textColor = { 255, 255, 255 };
     SDL_Surface* textSurface = TTF_RenderText_Blended_Wrapped( _font, text.c_str(), textColor, textAreaSize);
     if( textSurface == nullptr )
     {

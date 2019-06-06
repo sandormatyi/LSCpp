@@ -2,6 +2,8 @@
 #include <cmath>
 #include "controller.h"
 #include "../colors.h"
+#include "../fractal/fractal.h"
+#include "../render/fractalRenderer.h"
 
 Controller::Controller(Fractal &fractal, FractalRenderer &renderer) :
         _fractal(fractal), _renderer(renderer)

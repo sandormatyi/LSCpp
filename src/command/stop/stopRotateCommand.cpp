@@ -1,4 +1,5 @@
 #include "stopRotateCommand.h"
+#include "../../controller/controller.h"
 
 void StopRotateCommand::executeOnce(Controller &c)
 {

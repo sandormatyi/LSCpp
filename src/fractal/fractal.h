@@ -2,20 +2,7 @@
 #define MANDELBROT_FRACTAL_H
 
 #include <limits>
-
-typedef double coord_t;
-
-enum Direction {
-    LEFT,
-    RIGHT,
-    UP,
-    DOWN
-};
-
-struct Vector2D_t {
-    coord_t x;
-    coord_t y;
-};
+#include "../types.h"
 
 const coord_t eps = std::numeric_limits<coord_t>::epsilon() * 6;
 

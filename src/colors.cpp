@@ -4,7 +4,7 @@
 #include "fractal/fractal.h"
 
 
-SDL_Color to_SDL_Color(const float_color_t &c)
+uint8_color_t to_SDL_Color(const float_color_t &c)
 {
     return {
             (uint8_t) fmod(c.r, 256.0),
@@ -32,9 +32,9 @@ float_color_t interpolate(const float_color_t &c1, const float_color_t &c2, doub
     return c;
 }
 
-SDL_Color interpolate(const SDL_Color &c1, const SDL_Color &c2, double i)
+uint8_color_t interpolate(const uint8_color_t &c1, const uint8_color_t &c2, double i)
 {
-    SDL_Color c;
+    uint8_color_t c;
     c.r = (uint8_t) ((c1.r * (1.0 - i)) + (c2.r * i));
     c.g = (uint8_t) ((c1.g * (1.0 - i)) + (c2.g * i));
     c.b = (uint8_t) ((c1.b * (1.0 - i)) + (c2.b * i));
@@ -139,7 +139,7 @@ void changeColors(float deltaR, float deltaG, float deltaB, float deltaA)
     }
 }
 
-bool isEmptyColor(SDL_Color c)
+bool isEmptyColor(uint8_color_t c)
 {
     return c.r == 0 && c.g == 0 && c.b == 0 && c.a == 0;
 }

@@ -6,29 +6,11 @@
 #include <atomic>
 #include "../fractal/fractal.h"
 #include "renderParams.h"
-#include "opencv2/core/mat.hpp"
+#include <opencv2/core/mat.hpp>
 #include "../colors.h"
+#include "../types.h"
 
-enum BlendMode
-{
-    NO_ALPHA = 0,
-    SMOOTH = 1,
-    EPILEPSY = 2
-};
 
-enum ColorMode
-{
-    LINEAR = 0,
-    HISTOGRAM = 1
-};
-
-enum TraceMode
-{
-    DISABLE = 0,
-    PERSIST = 1,
-    FADE_FILLED = 2,
-    FADE_ALL = 3
-};
 
 std::string to_string(BlendMode blendMode);
 std::string to_string(ColorMode colorMode);
@@ -63,7 +45,7 @@ private:
 
     void colorByHistogram(cv::InputArray fractalValues);
     void colorLinear(cv::InputArray fractalValues);
-    void colorPixel(const SDL_Color &c, int x, int y);
+    void colorPixel(const uint8_color_t &c, int x, int y);
 
 private:
     Fractal &_fractal;

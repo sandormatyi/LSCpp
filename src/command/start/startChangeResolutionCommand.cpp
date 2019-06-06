@@ -1,4 +1,5 @@
 #include "startChangeResolutionCommand.h"
+#include "../../controller/controller.h"
 
 StartChangeResolutionCommand::StartChangeResolutionCommand(coord_t amount) :
         _amount(amount)

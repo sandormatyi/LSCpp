@@ -1,4 +1,5 @@
 #include "stopChangeResolutionCommand.h"
+#include "../../controller/controller.h"
 
 void StopChangeResolutionCommand::executeOnce(Controller &c)
 {

@@ -1,4 +1,5 @@
 #include "stopProgramCommand.h"
+#include "../../controller/controller.h"
 
 void StopProgramCommand::executeOnce(Controller &c)
 {
