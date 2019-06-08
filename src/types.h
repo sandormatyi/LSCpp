@@ -1,21 +1,9 @@
 #pragma once
 #include <stdint.h>
+#include <opencv2/core/types.hpp>
 
-typedef struct
-{
-    float r;
-    float g;
-    float b;
-    float a;
-} float_color_t;
-
-typedef struct
-{
-    uint8_t r;
-    uint8_t g;
-    uint8_t b;
-    uint8_t a;
-} uint8_color_t;
+typedef cv::Scalar_<float> float_color_t;
+typedef cv::Scalar_<uint8_t> uint8_color_t;
 
 typedef double coord_t;
 typedef float fractal_value_t;

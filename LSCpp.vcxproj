@@ -157,7 +157,6 @@
     <ClCompile Include="src\fractal\mandelbrot.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\render\fractalRenderer.cpp" />
-    <ClCompile Include="src\render\renderedText.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\colors.h" />
@@ -194,7 +193,6 @@
     <ClInclude Include="src\fractal\fractal.h" />
     <ClInclude Include="src\fractal\mandelbrot.h" />
     <ClInclude Include="src\render\fractalRenderer.h" />
-    <ClInclude Include="src\render\renderedText.h" />
     <ClInclude Include="src\render\renderParams.h" />
     <ClInclude Include="src\types.h" />
   </ItemGroup>

@@ -7,7 +7,6 @@
 #include <atomic>
 #include "fractalRenderer.h"
 #include "../colors.h"
-#include "renderedText.h"
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
@@ -136,9 +135,9 @@ uint64_t FractalRenderer::colorPixels(cv::InputArray fractalValues, cv::InputOut
         equalizeByHistogram(pixelValues);
     }
 
-    pixelValues.convertTo(pixelValues, CV_8UC4, 255.0 / _fractal.getMaxN());
+    pixelValues.convertTo(pixelValues, CV_8UC3, 255.0 / _fractal.getMaxN());
 
-    cv::applyColorMap(pixelValues, pixelValues, cv::COLORMAP_INFERNO);
+    mapGreyScaleImage(pixelValues);
     cv::cvtColor(pixelValues, pixelValues, cv::COLOR_BGR2BGRA);
 
     if (_blendMode == NO_ALPHA) {
@@ -147,8 +146,8 @@ uint64_t FractalRenderer::colorPixels(cv::InputArray fractalValues, cv::InputOut
         double alpha = 0.5;
 
         cv::Mat renderedImageMat = renderedImage.getMat();
-        pixelValues.forEach<cv::Scalar_<uint8_t>>([&](cv::Scalar_<uint8_t> &pixel, const int position[]) {
-            cv::Scalar_<uint8_t> &oldPixel = renderedImageMat.at<cv::Scalar_<uint8_t>>(position[0], position[1]);
+        pixelValues.forEach<uint8_color_t>([&](uint8_color_t &pixel, const int position[]) {
+            uint8_color_t &oldPixel = renderedImageMat.at<uint8_color_t>(position[0], position[1]);
             oldPixel[0] += (pixel[0] * alpha);            
             oldPixel[1] += (pixel[1] * alpha);
             oldPixel[2] += (pixel[2] * alpha);
@@ -255,7 +254,13 @@ void FractalRenderer::drawInfoText(cv::InputOutputArray result, uint64_t calcula
         ss << "Image number " << _iterationN - 1 << std::endl;
     }
 
-    textToTexture(ss.str(), result);
+    std::string line;
+    int y = 25;
+    while (!std::getline(ss, line).eof()) {
+        cv::putText(result, line, cv::Point(0, y), cv::FONT_HERSHEY_DUPLEX, 0.6, 0, 2);
+        cv::putText(result, line, cv::Point(0, y), cv::FONT_HERSHEY_DUPLEX, 0.6, { 255, 255, 255 });
+        y += 25;
+    }
 }
 
 void FractalRenderer::drawGreenCrosshair(cv::InputOutputArray result)

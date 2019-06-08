@@ -71,8 +71,8 @@ bool Controller::doAutomaticTransformations()
         invalidateImage = true;
     }
 
-    if (!isEmptyColor(_deltaColor)) {
-        changeColors(_deltaColor.r, _deltaColor.g, _deltaColor.b, _deltaColor.a);
+    if (!_deltaColor.isReal()) {
+        changeColors(_deltaColor);
         invalidateImage = true;
     }
 

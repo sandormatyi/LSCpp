@@ -2,7 +2,6 @@
 #include <sstream>
 #include <vector>
 #include "fractal/mandelbrot.h"
-#include "render/renderedText.h"
 #include <cstring>
 #include <ctime>
 #include "controller/controller.h"
@@ -21,9 +20,11 @@ bool scoreEnabled = false;
 
 int main(int argc, char *args[])
 {
+    std::cout << cv::getBuildInformation() << std::endl;
+
     initColors();
 
-    Mandelbrot m(-0.25, -0.636199109, 10000, 2000);
+    Mandelbrot m(-0.815276444999583, -0.1759531681, 10, 1024);
     //ExternalImage m(0, 0, 1, 64, "budi_6.png");
 
     FractalRenderer fractalRenderer(m, "Mosolypersely");

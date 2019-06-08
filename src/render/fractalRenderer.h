@@ -7,9 +7,7 @@
 #include <opencv2/core.hpp>
 #include "../fractal/fractal.h"
 #include "renderParams.h"
-#include "../colors.h"
 #include "../types.h"
-
 
 
 std::string to_string(BlendMode blendMode);

@@ -304,7 +304,7 @@ void KeyboardController::toggleRotState(State rotState)
 
 void KeyboardController::toggleChangeColorState()
 {
-    if (isEmptyColor(_deltaColor)) {
+    if (_deltaColor.isReal()) {
         _deltaColor = _defaultDeltaColor;
     } else {
         _deltaColor = { 0,0,0,0 };
