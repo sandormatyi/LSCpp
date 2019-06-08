@@ -26,8 +26,7 @@ int main(int argc, char *args[])
     Mandelbrot m(-0.25, -0.636199109, 10000, 2000);
     //ExternalImage m(0, 0, 1, 64, "budi_6.png");
 
-    cv::Mat img(SCREEN_HEIGHT, SCREEN_WIDTH, CV_8UC4);
-    FractalRenderer fractalRenderer(m, img, "Mosolypersely");
+    FractalRenderer fractalRenderer(m, "Mosolypersely");
 
     AutomaticController automaticController(m, fractalRenderer, "testCommandFile.mnd");
     //automaticController.initialize();
