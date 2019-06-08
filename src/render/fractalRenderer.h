@@ -38,6 +38,7 @@ public:
 private:
     uint64_t calculateFractalValues(cv::OutputArray result);
     uint64_t colorPixels(cv::InputArray fractalValues);
+    uint64_t morphImage(cv::InputOutputArray image);
     uint64_t saveImage(cv::InputArray image);
 
     void drawInfoText(cv::InputOutputArray result, uint64_t calculateTime, uint64_t colorTime, uint64_t saveTime);

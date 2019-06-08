@@ -15,6 +15,7 @@
 #include <chrono>  // for high_resolution_clock
 #include <direct.h> // _mkdir
 #include <thread>
+#include <map>
 
 
 FractalRenderer::FractalRenderer(Fractal &fractal, cv::InputOutputArray matrix, const std::string &folderName) :
@@ -59,18 +60,20 @@ void FractalRenderer::render()
     uint64_t saveTime = 0;
 
     if (_enableRender) {
-        cv::Mat fractalValues(SCREEN_HEIGHT, SCREEN_WIDTH, CV_64FC1);
+        static cv::Mat fractalValues(SCREEN_HEIGHT, SCREEN_WIDTH, CV_16UC1);
 
         calculateTime = calculateFractalValues(fractalValues);
 
         colorTime = colorPixels(fractalValues);
+
+        morphImage(_matrix);
 
         if (_saveImage) {
             saveTime = saveImage(_matrix);
         }
     }
 
-    cv::Mat copyWithText;
+    static cv::Mat copyWithText;
     _matrix.copyTo(copyWithText);
 
     drawInfoText(copyWithText, calculateTime, colorTime, saveTime);
@@ -99,7 +102,7 @@ void FractalRenderer::drawInfoText(cv::InputOutputArray result, uint64_t calcula
     ss << "Blend mode: " << to_string(_blendMode) << std::endl;
     ss << "Trace mode: " << to_string(_traceMode) << std::endl;
     if (_saveImage) {
-        ss << "Image number " << _iterationN - 1;
+        ss << "Image number " << _iterationN - 1 << std::endl;
     }
 
     textToTexture(ss.str(), result);
@@ -115,7 +118,7 @@ uint64_t FractalRenderer::calculateFractalValues(cv::OutputArray result)
             int y = r / _matrix.cols();
 
             coord_t value = _fractal.getFractalValue(x, SCREEN_WIDTH, y, SCREEN_HEIGHT);
-            result.getMat().at<coord_t>(y, x) = value;
+            result.getMat().at<uint16_t>(y, x) = (uint16_t)value;
         }
     });
 
@@ -148,45 +151,58 @@ uint64_t FractalRenderer::colorPixels(cv::InputArray fractalValues)
     return (uint64_t)(diff.count() * 1000);
 }
 
+uint64_t FractalRenderer::morphImage(cv::InputOutputArray image)
+{
+    const auto start = std::chrono::high_resolution_clock::now();
+
+    // TODO
+
+    const auto end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> diff = end - start;
+    return (uint64_t)(diff.count() * 1000);
+}
+
 void FractalRenderer::colorByHistogram(cv::InputArray fractalValues)
 {
     const int maxN = (int)(_fractal.getMaxN() + 1);
 
-    int* histogram = new int[maxN];
-    memset(histogram, 0, maxN * sizeof(int));
+    int histSize = maxN;
+    float range[] = { 0, maxN }; // the upper boundary is exclusive
+    const float *histRange = { range };
+    int channels[] = { 0 };
 
-    cv::parallel_for_(cv::Range(0, SCREEN_WIDTH * SCREEN_HEIGHT), [&](const cv::Range& range) {
-        for (int i = range.start; i < range.end; ++i) {
-            histogram[(int)fractalValues.getMat().at<coord_t>(i)]++;
-        }
-    });
+    cv::Mat hist(maxN, maxN, CV_16UC1);
+    cv::calcHist(&fractalValues.getMat(), 1, channels, cv::Mat(), hist, 1, &histSize, &histRange, true, false);
+    hist.convertTo(hist, CV_16UC1);
+    cv::imshow("manual hist", hist);
 
-    coord_t total = 0;
-    for (int i = 0; i < maxN; ++i) {
-        total += histogram[i];
+    // Create hue lookup table
+    std::map<uint16_t, double> nToHue;
+    uint32_t totalHue = 0;
+    for (int k = 0; k < maxN; ++k) {
+        totalHue += hist.at<uint16_t>(k);
+        nToHue[k] = totalHue;
     }
- 
+    const double rec_totalHue = 1.0 / totalHue;
+    for (int k = 0; k < maxN; ++k) {
+        nToHue[k] *= rec_totalHue;
+    }
+
     cv::parallel_for_(cv::Range(0, SCREEN_WIDTH*SCREEN_HEIGHT), [&](const cv::Range& range) {
         for (int i = range.start; i < range.end; ++i) {
             const unsigned int x = i % TEXTURE_WIDTH;
             const unsigned int y = i / TEXTURE_WIDTH;
 
-            coord_t n = fractalValues.getMat().at<coord_t>(y, x);
+            uint16_t n = fractalValues.getMat().at<uint16_t>(y, x);
 
             if (n > 0) {
-                coord_t hue = 0.0;
-                for (int k = 0; k <= n; ++k) {
-                    hue += histogram[k] / total;
-                }
-
-                int colorIndex = getColorIndex(hue);
+                int colorIndex = getColorIndex(nToHue[n]);
                 float_color_t &c = getColor(colorIndex);
 
                 colorPixel(to_SDL_Color(c), x, y);
             }
         }
     });
-    delete[] histogram;
 }
 
 void FractalRenderer::colorLinear(cv::InputArray fractalValues)
@@ -200,7 +216,7 @@ void FractalRenderer::colorLinear(cv::InputArray fractalValues)
 
             coord_t n = fractalValues.getMat().at<coord_t>(y, x);
 
-            if (n > 0) {
+            if (n >= 0) {
                 coord_t f = n / maxN;
                 int colorIndex = getColorIndex(f);
                 float_color_t &c1 = getColor(colorIndex);
