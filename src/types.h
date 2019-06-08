@@ -18,18 +18,13 @@ typedef struct
 } uint8_color_t;
 
 typedef double coord_t;
+typedef float fractal_value_t;
 
 enum BlendMode
 {
     NO_ALPHA = 0,
     SMOOTH = 1,
     EPILEPSY = 2
-};
-
-enum ColorMode
-{
-    LINEAR = 0,
-    HISTOGRAM = 1
 };
 
 enum TraceMode

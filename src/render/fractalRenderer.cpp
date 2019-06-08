@@ -21,7 +21,10 @@
 FractalRenderer::FractalRenderer(Fractal &fractal, cv::InputOutputArray matrix, const std::string &folderName) :
     _matrix(matrix),
     _fractal(fractal),
-    _folderName(std::string("C:/Users/matyi/Pictures/fractal/") + folderName + "_" + std::to_string(time(nullptr)))
+    _folderName(std::string("C:/Users/matyi/Pictures/fractal/") + folderName + "_" + std::to_string(time(nullptr))),
+    _histogram(true),
+    _blendMode(NO_ALPHA),
+    _traceMode(DISABLE)
 {
 }
 
@@ -33,11 +36,6 @@ void FractalRenderer::invalidate()
 void FractalRenderer::setBlendMode(BlendMode blendMode)
 {
     _blendMode = blendMode;
-}
-
-void FractalRenderer::setColorMode(ColorMode colorMode)
-{
-    _colorMode = colorMode;
 }
 
 void FractalRenderer::setTraceMode(TraceMode traceMode)
@@ -60,7 +58,7 @@ void FractalRenderer::render()
     uint64_t saveTime = 0;
 
     if (_enableRender) {
-        static cv::Mat fractalValues(SCREEN_HEIGHT, SCREEN_WIDTH, CV_16UC1);
+        cv::Mat fractalValues(SCREEN_HEIGHT, SCREEN_WIDTH, CV_32FC1);
 
         calculateTime = calculateFractalValues(fractalValues);
 
@@ -73,7 +71,7 @@ void FractalRenderer::render()
         }
     }
 
-    static cv::Mat copyWithText;
+    cv::Mat copyWithText;
     _matrix.copyTo(copyWithText);
 
     drawInfoText(copyWithText, calculateTime, colorTime, saveTime);
@@ -84,6 +82,43 @@ void FractalRenderer::render()
     _iterationN++;
 
     _isValid = true;
+}
+
+void FractalRenderer::equalizeByHistogram(cv::InputOutputArray fractalValues)
+{
+    const int maxN = (int)(_fractal.getMaxN() + 1);
+
+    int histSize = maxN;
+    float range[] = { 0, (float)maxN }; // the upper boundary is exclusive
+    const float *histRange = { range };
+    int channels[] = { 0 };
+
+    cv::Mat hist;
+    cv::calcHist(&fractalValues.getMat(), 1, channels, cv::Mat(), hist, 1, &histSize, &histRange, true, false);
+    hist.convertTo(hist, CV_16UC1);
+
+    // Calculate hue lookup table
+    std::map<uint16_t, fractal_value_t> nToHue;
+    nToHue[0] = 0;
+    fractal_value_t totalHue = 0;
+    for (int k = 1; k < maxN; ++k) {
+        totalHue += hist.at<uint16_t>(k);
+        nToHue[k] = totalHue;
+    }
+    const double rec_totalHue = maxN / totalHue;
+    for (int k = 1; k < maxN; ++k) {
+        nToHue[k] *= rec_totalHue;
+    }
+
+    cv::parallel_for_(cv::Range(0, SCREEN_WIDTH*SCREEN_HEIGHT), [&](const cv::Range& range) {
+        for (int i = range.start; i < range.end; ++i) {
+            const unsigned int x = i % TEXTURE_WIDTH;
+            const unsigned int y = i / TEXTURE_WIDTH;
+
+            fractal_value_t &n = fractalValues.getMat().at<fractal_value_t>(y, x);
+            n = nToHue[n];
+        }
+    });
 }
 
 void FractalRenderer::drawInfoText(cv::InputOutputArray result, uint64_t calculateTime, uint64_t colorTime, uint64_t saveTime)
@@ -98,7 +133,7 @@ void FractalRenderer::drawInfoText(cv::InputOutputArray result, uint64_t calcula
     ss << "Rotation: " << _fractal.getRotAngle() << std::endl;
     ss << "Render time: " << calculateTime + colorTime + saveTime << " ms (" << calculateTime << " + " << colorTime << " + "
         << saveTime << ")" << std::endl;
-    ss << "Color mode: " << to_string(_colorMode) << std::endl;
+    ss << "Histogram enabled: " << _histogram << std::endl;
     ss << "Blend mode: " << to_string(_blendMode) << std::endl;
     ss << "Trace mode: " << to_string(_traceMode) << std::endl;
     if (_saveImage) {
@@ -112,13 +147,15 @@ uint64_t FractalRenderer::calculateFractalValues(cv::OutputArray result)
 {
     const auto start = std::chrono::high_resolution_clock::now();
 
+    cv::Mat &resultMat = result.getMatRef();
+
     cv::parallel_for_(cv::Range(0, SCREEN_WIDTH * SCREEN_HEIGHT), [&](const cv::Range& range) {
         for (int r = range.start; r < range.end; r++) {
             int x = r % _matrix.cols();
             int y = r / _matrix.cols();
 
-            coord_t value = _fractal.getFractalValue(x, SCREEN_WIDTH, y, SCREEN_HEIGHT);
-            result.getMat().at<uint16_t>(y, x) = (uint16_t)value;
+            fractal_value_t n = _fractal.getFractalValue(x, SCREEN_WIDTH, y, SCREEN_HEIGHT);
+            resultMat.at<fractal_value_t>(y, x) = n;
         }
     });
 
@@ -127,7 +164,7 @@ uint64_t FractalRenderer::calculateFractalValues(cv::OutputArray result)
     return (uint64_t)(diff.count() * 1000);
 }
 
-uint64_t FractalRenderer::colorPixels(cv::InputArray fractalValues)
+uint64_t FractalRenderer::colorPixels(cv::InputOutputArray fractalValues)
 {
     const auto start = std::chrono::high_resolution_clock::now();
 
@@ -137,14 +174,11 @@ uint64_t FractalRenderer::colorPixels(cv::InputArray fractalValues)
         _matrix.getMat() *= _fadeFactor;
     }
 
-    switch (_colorMode) {
-        case HISTOGRAM:
-            colorByHistogram(fractalValues);
-            break;
-        case LINEAR:
-            colorLinear(fractalValues);
-            break;
+    if (_histogram) {
+        equalizeByHistogram(fractalValues);
     }
+
+    colorLinear(fractalValues);
 
     const auto end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> diff = end - start;
@@ -162,62 +196,19 @@ uint64_t FractalRenderer::morphImage(cv::InputOutputArray image)
     return (uint64_t)(diff.count() * 1000);
 }
 
-void FractalRenderer::colorByHistogram(cv::InputArray fractalValues)
-{
-    const int maxN = (int)(_fractal.getMaxN() + 1);
-
-    int histSize = maxN;
-    float range[] = { 0, maxN }; // the upper boundary is exclusive
-    const float *histRange = { range };
-    int channels[] = { 0 };
-
-    cv::Mat hist(maxN, maxN, CV_16UC1);
-    cv::calcHist(&fractalValues.getMat(), 1, channels, cv::Mat(), hist, 1, &histSize, &histRange, true, false);
-    hist.convertTo(hist, CV_16UC1);
-    cv::imshow("manual hist", hist);
-
-    // Create hue lookup table
-    std::map<uint16_t, double> nToHue;
-    uint32_t totalHue = 0;
-    for (int k = 0; k < maxN; ++k) {
-        totalHue += hist.at<uint16_t>(k);
-        nToHue[k] = totalHue;
-    }
-    const double rec_totalHue = 1.0 / totalHue;
-    for (int k = 0; k < maxN; ++k) {
-        nToHue[k] *= rec_totalHue;
-    }
-
-    cv::parallel_for_(cv::Range(0, SCREEN_WIDTH*SCREEN_HEIGHT), [&](const cv::Range& range) {
-        for (int i = range.start; i < range.end; ++i) {
-            const unsigned int x = i % TEXTURE_WIDTH;
-            const unsigned int y = i / TEXTURE_WIDTH;
-
-            uint16_t n = fractalValues.getMat().at<uint16_t>(y, x);
-
-            if (n > 0) {
-                int colorIndex = getColorIndex(nToHue[n]);
-                float_color_t &c = getColor(colorIndex);
-
-                colorPixel(to_SDL_Color(c), x, y);
-            }
-        }
-    });
-}
-
 void FractalRenderer::colorLinear(cv::InputArray fractalValues)
 {
-    const coord_t maxN = _fractal.getMaxN();
+    const float maxN = _fractal.getMaxN();
 
     cv::parallel_for_(cv::Range(0, SCREEN_WIDTH*SCREEN_HEIGHT), [&](const cv::Range& range) {
         for (int i = range.start; i < range.end; ++i) {
             const unsigned int x = i % TEXTURE_WIDTH;
             const unsigned int y = i / TEXTURE_WIDTH;
 
-            coord_t n = fractalValues.getMat().at<coord_t>(y, x);
+            fractal_value_t n = fractalValues.getMat().at<fractal_value_t>(y, x);
 
-            if (n >= 0) {
-                coord_t f = n / maxN;
+            if (n > 0) {
+                fractal_value_t f = n / maxN;
                 int colorIndex = getColorIndex(f);
                 float_color_t &c1 = getColor(colorIndex);
                 float_color_t &c2 = getColor(colorIndex + 1);
@@ -327,17 +318,6 @@ std::string to_string(BlendMode blendMode)
     throw std::invalid_argument("blendMode");
 }
 
-std::string to_string(ColorMode colorMode)
-{
-    switch (colorMode) {
-        case LINEAR:
-            return "LINEAR";
-        case HISTOGRAM:
-            return "HISTOGRAM";
-    }
-    throw std::invalid_argument("colorMode");
-}
-
 std::string to_string(TraceMode traceMode)
 {
     switch (traceMode) {
@@ -352,4 +332,3 @@ std::string to_string(TraceMode traceMode)
     }
     throw std::invalid_argument("traceMode");
 }
-
