@@ -159,6 +159,10 @@ uint64_t FractalRenderer::colorPixels(cv::InputArray fractalValues, cv::InputOut
         double oldAlpha = 1 - alpha;
 
         cv::addWeighted(renderedImage, oldAlpha, pixelValues, alpha, 1, renderedImage);
+    } else if (_blendMode == SATURATED) {
+        double alpha = 0.5;
+
+        renderedImage.getMat() += (pixelValues * alpha);
     }
 
     const auto end = std::chrono::high_resolution_clock::now();
@@ -279,6 +283,8 @@ std::string to_string(BlendMode blendMode)
             return "SMOOTH";
         case EPILEPSY:
             return "EPILEPSY";
+        case SATURATED:
+            return "SATURATED";
     }
     throw std::invalid_argument("blendMode");
 }

@@ -137,6 +137,9 @@ bool KeyboardController::processKeyboardInput(int sym)
     case '3':
         _renderer.setBlendMode(EPILEPSY);
         break;
+    case '4':
+        _renderer.setBlendMode(SATURATED);
+        break;
     case KEY_F1:
         _renderer.setTraceMode(DISABLE);
         break;

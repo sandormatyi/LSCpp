@@ -24,7 +24,8 @@ enum BlendMode
 {
     NO_ALPHA = 0,
     SMOOTH = 1,
-    EPILEPSY = 2
+    EPILEPSY = 2,
+    SATURATED = 3
 };
 
 enum TraceMode
