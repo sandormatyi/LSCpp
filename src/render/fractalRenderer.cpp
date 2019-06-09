@@ -137,8 +137,7 @@ uint64_t FractalRenderer::colorPixels(cv::InputArray fractalValues, cv::InputOut
 
     pixelValues.convertTo(pixelValues, CV_8UC3, 255.0 / _fractal.getMaxN());
 
-    mapGreyScaleImage(pixelValues);
-    cv::cvtColor(pixelValues, pixelValues, cv::COLOR_BGR2BGRA);
+    mapGreyScaleImageToBGRA(pixelValues);
 
     if (_blendMode == NO_ALPHA) {
         renderedImage.assign(pixelValues);

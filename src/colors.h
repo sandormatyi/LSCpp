@@ -5,7 +5,7 @@
 #include <opencv2/core.hpp>
 
 void initColors();
-void mapGreyScaleImage(cv::InputOutputArray image);
+void mapGreyScaleImageToBGRA(cv::InputOutputArray image);
 void changeColors(float_color_t delta);
 
 #endif //MANDELBROT_COLORS_H
