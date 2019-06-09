@@ -1,10 +1,10 @@
 #ifndef MANDELBROT_KEYBOARDCONTROLLER_H
 #define MANDELBROT_KEYBOARDCONTROLLER_H
 
-#include "controller.h"
+#include "UIController.h"
 
 
-class KeyboardController : public Controller
+class KeyboardController : public UIController
 {
 public:
     enum State
@@ -21,6 +21,7 @@ public:
 
     bool processKeyboardInput(int sym);
 
+private:
     void moveLeft();
     void moveRight();
     void moveUp();
@@ -43,7 +44,6 @@ public:
     void toggleRotState(State rotState);
     void toggleChangeColorState();
 
-private:
     coord_t _defaultZoomSpeed;
     coord_t _defaultMoveSpeed;
     coord_t _defaultDeltaN;

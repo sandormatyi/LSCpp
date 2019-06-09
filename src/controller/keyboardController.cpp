@@ -3,6 +3,8 @@
 #include "../colors.h"
 #include "../fractal/fractal.h"
 #include "../render/fractalRenderer.h"
+#include "../command/allCommands.h"
+
 
 const int KEY_ESCAPE = 27;
 const int KEY_SPACE = 32;
@@ -19,7 +21,7 @@ const int KEY_F4 = 7536640;
 KeyboardController::KeyboardController(Fractal &fractal, FractalRenderer &renderer, coord_t defaultZoomSpeed,
     coord_t defaultMoveSpeed, coord_t defaultDeltaN, coord_t defaultDeltaRot,
     float_color_t defaultDeltaColor) :
-    Controller(fractal, renderer),
+    UIController(fractal, renderer),
     _defaultZoomSpeed(defaultZoomSpeed),
     _defaultMoveSpeed(defaultMoveSpeed),
     _defaultDeltaN(defaultDeltaN),
@@ -44,123 +46,108 @@ bool KeyboardController::processKeyboardInput(int sym)
         _defaultMoveSpeed *= multiplier;
         _defaultDeltaRot *= multiplier;
         _defaultDeltaN *= multiplier;
+        sym += 32;
     }
 
     bool actionHappened = true;
 
     switch (sym) {
-    case 'w':
-    case 'W':
-        zoomIn();
-        break;
-    case 's':
-    case 'S':
-        zoomOut();
-        break;
-    case KEY_UP_ARROW:
-        moveUp();
-        break;
-    case KEY_DOWN_ARROW:
-        moveDown();
-        break;
-    case KEY_LEFT_ARROW:
-        moveLeft();
-        break;
-    case KEY_RIGHT_ARROW:
-        moveRight();
-        break;
-    case 'q':
-    case 'Q':
-        decreaseResolution();
-        break;
-    case 'e':
-    case 'E':
-        increaseResolution();
-        break;
-    case 'a':
-    case 'A':
-        amazingResolution();
-        break;
-    case 'd':
-    case 'D':
-        shittyResolution();
-        break;
-    case 'i':
-    case 'I':
-        toggleZoomState(PLUS);
-        break;
-    case 'o':
-    case 'O':
-        toggleZoomState(MINUS);
-        break;
-    case 'k':
-    case 'K':
-        toggleNState(PLUS);
-        break;
-    case 'l':
-    case 'L':
-        toggleNState(MINUS);
-        break;
-    case 'n':
-    case 'N':
-        toggleRotState(PLUS);
-        break;
-    case 'm':
-    case 'M':
-        toggleRotState(MINUS);
-        break;
-    case 'x':
-    case 'X':
-        rotateLeft();
-        break;
-    case 'c':
-    case 'C':
-        rotateRight();
-        break;
-    case 'p':
-    case 'P':
-        toggleChangeColorState();
-        break;
-    case KEY_ESCAPE:
-        setQuitFlag();
-        break;
-    case 'r':
-    case 'R':
-        _renderer.setSaveImage(!_renderer.getSaveImage());
-        break;
-    case '1':
-        _renderer.setBlendMode(NO_ALPHA);
-        break;
-    case '2':
-        _renderer.setBlendMode(SMOOTH);
-        break;
-    case '3':
-        _renderer.setBlendMode(EPILEPSY);
-        break;
-    case '4':
-        _renderer.setBlendMode(SATURATED);
-        break;
-    case KEY_F1:
-        _renderer.setTraceMode(DISABLE);
-        break;
-    case KEY_F2:
-        _renderer.setTraceMode(PERSIST);
-        break;
-    case KEY_F3:
-        _renderer.setTraceMode(FADE_FILLED);
-        break;
-    case KEY_F4:
-        _renderer.setTraceMode(FADE_ALL);
-        break;
-    /*case KEY_SPACE:
-        scoreEnabled = !scoreEnabled;
-        break;
-    case SDLK_BACKSPACE:
-        automaticController.undoLastBeat();
-        fractalRenderer.invalidate();
-        break;*/
-    default:
-        actionHappened = false;
+        case 'w':
+            zoomIn();
+            break;
+        case 's':
+            zoomOut();
+            break;
+        case KEY_UP_ARROW:
+            moveUp();
+            break;
+        case KEY_DOWN_ARROW:
+            moveDown();
+            break;
+        case KEY_LEFT_ARROW:
+            moveLeft();
+            break;
+        case KEY_RIGHT_ARROW:
+            moveRight();
+            break;
+        case 'q':
+            decreaseResolution();
+            break;
+        case 'e':
+            increaseResolution();
+            break;
+        case 'a':
+            amazingResolution();
+            break;
+        case 'd':
+            shittyResolution();
+            break;
+        case 'i':
+            toggleZoomState(PLUS);
+            break;
+        case 'o':
+            toggleZoomState(MINUS);
+            break;
+        case 'k':
+            toggleNState(PLUS);
+            break;
+        case 'l':
+            toggleNState(MINUS);
+            break;
+        case 'n':
+            toggleRotState(PLUS);
+            break;
+        case 'm':
+            toggleRotState(MINUS);
+            break;
+        case 'x':
+            rotateLeft();
+            break;
+        case 'c':
+            rotateRight();
+            break;
+        case 'p':
+            toggleChangeColorState();
+            break;
+        case KEY_ESCAPE:
+            setQuitFlag();
+            break;
+        case 'r':
+            addCommand(new SetSaveImageCommand(!_renderer.getSaveImage()));
+            break;
+        case '1':
+            addCommand(new SetBlendModeCommand(NO_ALPHA));
+            break;
+        case '2':
+            addCommand(new SetBlendModeCommand(SMOOTH));
+            break;
+        case '3':           
+            addCommand(new SetBlendModeCommand(EPILEPSY));
+            break;
+        case '4':
+            addCommand(new SetBlendModeCommand(SATURATED));
+            break;
+        case KEY_F1:
+            addCommand(new SetTraceModeCommand(DISABLE));
+            break;
+        case KEY_F2:
+            addCommand(new SetTraceModeCommand(PERSIST));
+            break;
+        case KEY_F3:
+            addCommand(new SetTraceModeCommand(FADE_FILLED));
+            break;
+        case KEY_F4:
+            addCommand(new SetTraceModeCommand(FADE_ALL));
+            break;
+            /*case KEY_SPACE:
+                scoreEnabled = !scoreEnabled;
+                break;
+            case SDLK_BACKSPACE:
+                automaticController.undoLastBeat();
+                fractalRenderer.invalidate();
+                break;*/
+        default:
+            actionHappened = false;
     }
 
     if (turboMode) {
@@ -170,143 +157,147 @@ bool KeyboardController::processKeyboardInput(int sym)
         _defaultDeltaN = deltaN;
     }
 
+    if (actionHappened) {
+        executeAll();
+    }
+
     return actionHappened;
 }
 
 void KeyboardController::moveLeft()
 {
-    _fractal.move(LEFT, _defaultMoveSpeed);
+    addCommand(new DirectionMoveCommand(LEFT, _defaultMoveSpeed));
 }
 
 void KeyboardController::moveRight()
 {
-    _fractal.move(RIGHT, _defaultMoveSpeed);
+    addCommand(new DirectionMoveCommand(RIGHT, _defaultMoveSpeed));
 }
 
 void KeyboardController::moveUp()
 {
-    _fractal.move(UP, _defaultMoveSpeed);
+    addCommand(new DirectionMoveCommand(UP, _defaultMoveSpeed));
 }
 
 void KeyboardController::moveDown()
 {
-    _fractal.move(DOWN, _defaultMoveSpeed);
+    addCommand(new DirectionMoveCommand(DOWN, _defaultMoveSpeed));
 }
 
 void KeyboardController::zoomIn()
 {
-    _fractal.zoom(_defaultZoomSpeed);
+    addCommand(new ChangeZoomCommand(_defaultZoomSpeed));
 }
 
 void KeyboardController::zoomOut()
 {
-    _fractal.zoom(1 / _defaultZoomSpeed);
+    addCommand(new ChangeZoomCommand(1 / _defaultZoomSpeed));
 }
 
 void KeyboardController::increaseResolution()
 {
-    _fractal.changeMaxN(_defaultDeltaN);
+    addCommand(new ChangeResolutionCommand(_defaultDeltaN));
 }
 
 void KeyboardController::decreaseResolution()
 {
-    _fractal.changeMaxN(-_defaultDeltaN);
+    addCommand(new ChangeResolutionCommand(-_defaultDeltaN));
 }
 
 void KeyboardController::amazingResolution()
 {
-    _fractal.setMaxN(1024);
+    addCommand(new SetResolutionCommand(1024));
 }
 
 void KeyboardController::shittyResolution()
 {
-    _fractal.setMaxN(8);
+    addCommand(new SetResolutionCommand(8));
 }
 
 void KeyboardController::rotateLeft()
 {
-    _fractal.rotate(_defaultDeltaRot);
+    addCommand(new ChangeRotationCommand(_defaultDeltaRot));
 }
 
 void KeyboardController::rotateRight()
 {
-    _fractal.rotate(-_defaultDeltaRot);
+    addCommand(new ChangeRotationCommand(-_defaultDeltaRot));
 }
 
 void KeyboardController::toggleZoomState(State zoomState)
 {
     switch (zoomState) {
-    case PLUS:
-        if (_zoomSpeed > 1) {
-            _zoomSpeed = 1;
-        } else {
-            _zoomSpeed = _defaultZoomSpeed;
-        }
-        break;
-    case MINUS:
-        if (_zoomSpeed < 1) {
-            _zoomSpeed = 1;
-        } else {
-            _zoomSpeed = 1 / _defaultZoomSpeed;
-        }
-        break;
-    case ZERO:
-        _zoomSpeed = 1;
-        break;
+        case PLUS:
+            if (_zoomSpeed > 1) {
+                addCommand(new StopZoomCommand());
+            } else {
+                addCommand(new StartZoomCommand(_defaultZoomSpeed));
+            }
+            break;
+        case MINUS:
+            if (_zoomSpeed < 1) {
+                addCommand(new StopZoomCommand());
+            } else {
+                addCommand(new StartZoomCommand(1 / _defaultZoomSpeed));
+            }
+            break;
+        case ZERO:
+            addCommand(new StopZoomCommand());
+            break;
     }
 }
 
 void KeyboardController::toggleNState(State nState)
 {
     switch (nState) {
-    case PLUS:
-        if (_deltaN > 0) {
-            _deltaN = 0;
-        } else {
-            _deltaN = _defaultDeltaN;
-        }
-        break;
-    case MINUS:
-        if (_deltaN < 0) {
-            _deltaN = 0;
-        } else {
-            _deltaN = -_defaultDeltaN;
-        }
-        break;
-    case ZERO:
-        _deltaN = 0;
-        break;
+        case PLUS:
+            if (_deltaN > 0) {
+                addCommand(new StopChangeResolutionCommand());
+            } else {
+                addCommand(new StartChangeResolutionCommand(_defaultDeltaN));
+            }
+            break;
+        case MINUS:
+            if (_deltaN < 0) {
+                addCommand(new StopChangeResolutionCommand());
+            } else {
+                addCommand(new StartChangeResolutionCommand(-_defaultDeltaN));
+            }
+            break;
+        case ZERO:
+            addCommand(new StopChangeResolutionCommand());
+            break;
     }
 }
 
 void KeyboardController::toggleRotState(State rotState)
 {
     switch (rotState) {
-    case PLUS:
-        if (_deltaRot > 0) {
-            _deltaRot = 0;
-        } else {
-            _deltaRot = _defaultDeltaRot;
-        }
-        break;
-    case MINUS:
-        if (_deltaRot < 0) {
-            _deltaRot = 0;
-        } else {
-            _deltaRot = -_defaultDeltaRot;
-        }
-        break;
-    case ZERO:
-        _deltaRot = 0;
-        break;
+        case PLUS:
+            if (_deltaRot > 0) {
+                addCommand(new StopRotateCommand());
+            } else {
+                addCommand(new StartRotateCommand(_defaultDeltaRot));
+            }
+            break;
+        case MINUS:
+            if (_deltaRot < 0) {
+                addCommand(new StopRotateCommand());
+            } else {
+                addCommand(new StartRotateCommand(-_defaultDeltaRot));
+            }
+            break;
+        case ZERO:
+            addCommand(new StopRotateCommand());
+            break;
     }
 }
 
 void KeyboardController::toggleChangeColorState()
 {
     if (_deltaColor.isReal()) {
-        _deltaColor = _defaultDeltaColor;
+        addCommand(new StartChangeColorsCommand(_defaultDeltaColor));
     } else {
-        _deltaColor = { 0,0,0,0 };
+        addCommand(new StopChangeColorsCommand());
     }
 }

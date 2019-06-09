@@ -157,8 +157,10 @@
     <ClCompile Include="src\fractal\mandelbrot.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\render\fractalRenderer.cpp" />
+    <ClCompile Include="src\controller\UIController.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\command\allCommands.h" />
     <ClInclude Include="src\colors.h" />
     <ClInclude Include="src\command\change\changeColorsCommand.h" />
     <ClInclude Include="src\command\change\changePositionCommand.h" />
@@ -195,6 +197,7 @@
     <ClInclude Include="src\render\fractalRenderer.h" />
     <ClInclude Include="src\render\renderParams.h" />
     <ClInclude Include="src\types.h" />
+    <ClInclude Include="src\controller\UIController.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -125,6 +125,9 @@
     </ClCompile>
     <ClCompile Include="src\colors.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\controller\UIController.cpp">
+      <Filter>controller</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\controller\automaticController.h">
@@ -231,5 +234,11 @@
     </ClInclude>
     <ClInclude Include="src\colors.h" />
     <ClInclude Include="src\types.h" />
+    <ClInclude Include="src\controller\UIController.h">
+      <Filter>controller</Filter>
+    </ClInclude>
+    <ClInclude Include="src\command\allCommands.h">
+      <Filter>command</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
