@@ -1,0 +1,252 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="command">
+      <UniqueIdentifier>{bb3f6fa2-c7f7-4077-a6e3-e0817177a0a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="command\change">
+      <UniqueIdentifier>{2af5e478-20c3-4870-b232-426d0f0ef145}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="command\set">
+      <UniqueIdentifier>{6ba25554-a3c4-46d0-b64e-92df2052cd53}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="command\start">
+      <UniqueIdentifier>{630d6781-07ab-4866-8dfd-d973cc20a790}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="command\stop">
+      <UniqueIdentifier>{c3bea6f9-644d-4e54-aabb-426232914e44}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="controller">
+      <UniqueIdentifier>{11a1d310-9ed6-4f69-8eac-127aa7f99e60}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="fractal">
+      <UniqueIdentifier>{b126718b-6315-4138-849c-ea000fe2d51e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="render">
+      <UniqueIdentifier>{12271cb2-ec0d-4a73-aaac-b49897132772}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="command\logCommand.cpp">
+      <Filter>command</Filter>
+    </ClCompile>
+    <ClCompile Include="command\change\changeColorsCommand.cpp">
+      <Filter>command\change</Filter>
+    </ClCompile>
+    <ClCompile Include="command\change\changePositionCommand.cpp">
+      <Filter>command\change</Filter>
+    </ClCompile>
+    <ClCompile Include="command\change\changeResolutionCommand.cpp">
+      <Filter>command\change</Filter>
+    </ClCompile>
+    <ClCompile Include="command\change\changeRotationCommand.cpp">
+      <Filter>command\change</Filter>
+    </ClCompile>
+    <ClCompile Include="command\change\changeZoomCommand.cpp">
+      <Filter>command\change</Filter>
+    </ClCompile>
+    <ClCompile Include="command\change\directionMoveCommand.cpp">
+      <Filter>command\change</Filter>
+    </ClCompile>
+    <ClCompile Include="command\set\setBlendModeCommand.cpp">
+      <Filter>command\set</Filter>
+    </ClCompile>
+    <ClCompile Include="command\set\setEnableRenderCommand.cpp">
+      <Filter>command\set</Filter>
+    </ClCompile>
+    <ClCompile Include="command\set\setFadeFactorCommand.cpp">
+      <Filter>command\set</Filter>
+    </ClCompile>
+    <ClCompile Include="command\set\setPositionCommand.cpp">
+      <Filter>command\set</Filter>
+    </ClCompile>
+    <ClCompile Include="command\set\setResolutionCommand.cpp">
+      <Filter>command\set</Filter>
+    </ClCompile>
+    <ClCompile Include="command\set\setRotationCommand.cpp">
+      <Filter>command\set</Filter>
+    </ClCompile>
+    <ClCompile Include="command\set\setSaveImageCommand.cpp">
+      <Filter>command\set</Filter>
+    </ClCompile>
+    <ClCompile Include="command\set\setTraceModeCommand.cpp">
+      <Filter>command\set</Filter>
+    </ClCompile>
+    <ClCompile Include="command\set\setZoomCommand.cpp">
+      <Filter>command\set</Filter>
+    </ClCompile>
+    <ClCompile Include="command\start\startChangeColorsCommand.cpp">
+      <Filter>command\start</Filter>
+    </ClCompile>
+    <ClCompile Include="command\start\startChangeResolutionCommand.cpp">
+      <Filter>command\start</Filter>
+    </ClCompile>
+    <ClCompile Include="command\start\startRotateCommand.cpp">
+      <Filter>command\start</Filter>
+    </ClCompile>
+    <ClCompile Include="command\start\startZoomCommand.cpp">
+      <Filter>command\start</Filter>
+    </ClCompile>
+    <ClCompile Include="command\stop\stopChangeColorsCommand.cpp">
+      <Filter>command\stop</Filter>
+    </ClCompile>
+    <ClCompile Include="command\stop\stopChangeResolutionCommand.cpp">
+      <Filter>command\stop</Filter>
+    </ClCompile>
+    <ClCompile Include="command\stop\stopProgramCommand.cpp">
+      <Filter>command\stop</Filter>
+    </ClCompile>
+    <ClCompile Include="command\stop\stopRotateCommand.cpp">
+      <Filter>command\stop</Filter>
+    </ClCompile>
+    <ClCompile Include="command\stop\stopZoomCommand.cpp">
+      <Filter>command\stop</Filter>
+    </ClCompile>
+    <ClCompile Include="controller\automaticController.cpp">
+      <Filter>controller</Filter>
+    </ClCompile>
+    <ClCompile Include="controller\controller.cpp">
+      <Filter>controller</Filter>
+    </ClCompile>
+    <ClCompile Include="controller\keyboardController.cpp">
+      <Filter>controller</Filter>
+    </ClCompile>
+    <ClCompile Include="controller\UIController.cpp">
+      <Filter>controller</Filter>
+    </ClCompile>
+    <ClCompile Include="fractal\externalImage.cpp">
+      <Filter>fractal</Filter>
+    </ClCompile>
+    <ClCompile Include="fractal\fractal.cpp">
+      <Filter>fractal</Filter>
+    </ClCompile>
+    <ClCompile Include="fractal\mandelbrot.cpp">
+      <Filter>fractal</Filter>
+    </ClCompile>
+    <ClCompile Include="render\fractalRenderer.cpp">
+      <Filter>render</Filter>
+    </ClCompile>
+    <ClCompile Include="colors.cpp" />
+    <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="FractalGenerator.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="stdafx.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="command\allCommands.h">
+      <Filter>command</Filter>
+    </ClInclude>
+    <ClInclude Include="command\command.h">
+      <Filter>command</Filter>
+    </ClInclude>
+    <ClInclude Include="command\logCommand.h">
+      <Filter>command</Filter>
+    </ClInclude>
+    <ClInclude Include="command\change\changeColorsCommand.h">
+      <Filter>command\change</Filter>
+    </ClInclude>
+    <ClInclude Include="command\change\changePositionCommand.h">
+      <Filter>command\change</Filter>
+    </ClInclude>
+    <ClInclude Include="command\change\changeResolutionCommand.h">
+      <Filter>command\change</Filter>
+    </ClInclude>
+    <ClInclude Include="command\change\changeRotationCommand.h">
+      <Filter>command\change</Filter>
+    </ClInclude>
+    <ClInclude Include="command\change\changeZoomCommand.h">
+      <Filter>command\change</Filter>
+    </ClInclude>
+    <ClInclude Include="command\change\directionMoveCommand.h">
+      <Filter>command\change</Filter>
+    </ClInclude>
+    <ClInclude Include="command\set\setBlendModeCommand.h">
+      <Filter>command\set</Filter>
+    </ClInclude>
+    <ClInclude Include="command\set\setEnableRenderCommand.h">
+      <Filter>command\set</Filter>
+    </ClInclude>
+    <ClInclude Include="command\set\setFadeFactorCommand.h">
+      <Filter>command\set</Filter>
+    </ClInclude>
+    <ClInclude Include="command\set\setPositionCommand.h">
+      <Filter>command\set</Filter>
+    </ClInclude>
+    <ClInclude Include="command\set\setResolutionCommand.h">
+      <Filter>command\set</Filter>
+    </ClInclude>
+    <ClInclude Include="command\set\setRotationCommand.h">
+      <Filter>command\set</Filter>
+    </ClInclude>
+    <ClInclude Include="command\set\setSaveImageCommand.h">
+      <Filter>command\set</Filter>
+    </ClInclude>
+    <ClInclude Include="command\set\setTraceModeCommand.h">
+      <Filter>command\set</Filter>
+    </ClInclude>
+    <ClInclude Include="command\set\setZoomCommand.h">
+      <Filter>command\set</Filter>
+    </ClInclude>
+    <ClInclude Include="command\start\startChangeColorsCommand.h">
+      <Filter>command\start</Filter>
+    </ClInclude>
+    <ClInclude Include="command\start\startChangeResolutionCommand.h">
+      <Filter>command\start</Filter>
+    </ClInclude>
+    <ClInclude Include="command\start\startRotateCommand.h">
+      <Filter>command\start</Filter>
+    </ClInclude>
+    <ClInclude Include="command\start\startZoomCommand.h">
+      <Filter>command\start</Filter>
+    </ClInclude>
+    <ClInclude Include="command\stop\stopChangeColorsCommand.h">
+      <Filter>command\stop</Filter>
+    </ClInclude>
+    <ClInclude Include="command\stop\stopChangeResolutionCommand.h">
+      <Filter>command\stop</Filter>
+    </ClInclude>
+    <ClInclude Include="command\stop\stopProgramCommand.h">
+      <Filter>command\stop</Filter>
+    </ClInclude>
+    <ClInclude Include="command\stop\stopRotateCommand.h">
+      <Filter>command\stop</Filter>
+    </ClInclude>
+    <ClInclude Include="command\stop\stopZoomCommand.h">
+      <Filter>command\stop</Filter>
+    </ClInclude>
+    <ClInclude Include="controller\automaticController.h">
+      <Filter>controller</Filter>
+    </ClInclude>
+    <ClInclude Include="controller\controller.h">
+      <Filter>controller</Filter>
+    </ClInclude>
+    <ClInclude Include="controller\keyboardController.h">
+      <Filter>controller</Filter>
+    </ClInclude>
+    <ClInclude Include="controller\UIController.h">
+      <Filter>controller</Filter>
+    </ClInclude>
+    <ClInclude Include="fractal\externalImage.h">
+      <Filter>fractal</Filter>
+    </ClInclude>
+    <ClInclude Include="fractal\fractal.h">
+      <Filter>fractal</Filter>
+    </ClInclude>
+    <ClInclude Include="fractal\mandelbrot.h">
+      <Filter>fractal</Filter>
+    </ClInclude>
+    <ClInclude Include="render\fractalRenderer.h">
+      <Filter>render</Filter>
+    </ClInclude>
+    <ClInclude Include="render\renderParams.h">
+      <Filter>render</Filter>
+    </ClInclude>
+    <ClInclude Include="colors.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="types.h" />
+    <ClInclude Include="controller\keys.h">
+      <Filter>controller</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
