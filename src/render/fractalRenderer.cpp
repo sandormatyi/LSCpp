@@ -23,7 +23,8 @@ FractalRenderer::FractalRenderer(Fractal &fractal, const std::string &folderName
     _histogram(true),
     _blendMode(NO_ALPHA),
     _traceMode(DISABLE),
-    _renderedImage(SCREEN_HEIGHT, SCREEN_WIDTH, CV_8UC4)
+    _renderedImage(SCREEN_HEIGHT, SCREEN_WIDTH, CV_8UC4),
+    _colorMap(cv::ColormapTypes::COLORMAP_HSV)
 {
 }
 
@@ -35,6 +36,11 @@ void FractalRenderer::setBlendMode(BlendMode blendMode)
 void FractalRenderer::setTraceMode(TraceMode traceMode)
 {
     _traceMode = traceMode;
+}
+
+void FractalRenderer::setColorMap(cv::ColormapTypes colorMap)
+{
+    _colorMap = colorMap;
 }
 
 bool FractalRenderer::getSaveImage() const
@@ -137,7 +143,7 @@ uint64_t FractalRenderer::colorPixels(cv::InputArray fractalValues, cv::InputOut
 
     pixelValues.convertTo(pixelValues, CV_8UC3, 255.0 / _fractal.getMaxN());
 
-    mapGreyScaleImageToBGRA(pixelValues);
+    mapGreyScaleImageToBGRA(pixelValues, _colorMap);
 
     if (_blendMode == NO_ALPHA) {
         renderedImage.assign(pixelValues);
@@ -147,7 +153,7 @@ uint64_t FractalRenderer::colorPixels(cv::InputArray fractalValues, cv::InputOut
         cv::Mat renderedImageMat = renderedImage.getMat();
         pixelValues.forEach<uint8_color_t>([&](uint8_color_t &pixel, const int position[]) {
             uint8_color_t &oldPixel = renderedImageMat.at<uint8_color_t>(position[0], position[1]);
-            oldPixel[0] += (pixel[0] * alpha);            
+            oldPixel[0] += (pixel[0] * alpha);
             oldPixel[1] += (pixel[1] * alpha);
             oldPixel[2] += (pixel[2] * alpha);
             oldPixel[3] = pixel[3];

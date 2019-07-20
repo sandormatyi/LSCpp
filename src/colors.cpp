@@ -11,11 +11,11 @@ void initColors()
 {
 }
 
-void mapGreyScaleImageToBGRA(cv::InputOutputArray image)
+void mapGreyScaleImageToBGRA(cv::InputOutputArray image, cv::ColormapTypes colorMap)
 {
-    cv::Mat colorMap;
-    colors.convertTo(colorMap, CV_8UC3);
-    cv::applyColorMap(image, image, cv::COLORMAP_OCEAN);
+    //cv::Mat colorMat;
+    //colors.convertTo(colorMat, CV_8UC3);
+    cv::applyColorMap(image, image, colorMap);
     cv::cvtColor(image, image, cv::COLOR_BGR2BGRA);
 }
 

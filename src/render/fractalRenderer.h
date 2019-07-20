@@ -5,6 +5,7 @@
 #include <ctime>
 #include <atomic>
 #include <opencv2/core.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
 #include "../fractal/fractal.h"
 #include "renderParams.h"
 #include "../types.h"
@@ -29,6 +30,7 @@ public:
     void setSaveImage(bool saveImage);
     void setBlendMode(BlendMode blendMode);
     void setTraceMode(TraceMode traceMode);
+    void setColorMap(cv::ColormapTypes colorMap);
 
 private:
     uint64_t calculateFractalValues(cv::OutputArray fractalValues);
@@ -52,6 +54,7 @@ private:
     bool _histogram;
     BlendMode _blendMode;
     TraceMode _traceMode;
+    cv::ColormapTypes _colorMap;
 
     unsigned int _iterationN = 1;
     cv::Mat _renderedImage;
