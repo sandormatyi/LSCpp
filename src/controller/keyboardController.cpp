@@ -1,21 +1,36 @@
 #include <cmath>
 #include "keyboardController.h"
 #include "../colors.h"
+#include "../fractal/fractal.h"
+#include "../render/fractalRenderer.h"
+#include "../command/allCommands.h"
+
+
+const int KEY_ESCAPE = 27;
+const int KEY_SPACE = 32;
+const int KEY_LEFT_ARROW = 2424832;
+const int KEY_RIGHT_ARROW = 2555904;
+const int KEY_UP_ARROW = 2490368;
+const int KEY_DOWN_ARROW = 2621440;
+const int KEY_F1 = 7340032;
+const int KEY_F2 = 7405568;
+const int KEY_F3 = 7471104;
+const int KEY_F4 = 7536640;
 
 
 KeyboardController::KeyboardController(Fractal &fractal, FractalRenderer &renderer, coord_t defaultZoomSpeed,
-                                       coord_t defaultMoveSpeed, coord_t defaultDeltaN, coord_t defaultDeltaRot,
-                                       float_color_t defaultDeltaColor) :
-        Controller(fractal, renderer),
-        _defaultZoomSpeed(defaultZoomSpeed),
-        _defaultMoveSpeed(defaultMoveSpeed),
-        _defaultDeltaN(defaultDeltaN),
-        _defaultDeltaRot(defaultDeltaRot),
-        _defaultDeltaColor(defaultDeltaColor)
+    coord_t defaultMoveSpeed, coord_t defaultDeltaN, coord_t defaultDeltaRot,
+    float_color_t defaultDeltaColor) :
+    UIController(fractal, renderer),
+    _defaultZoomSpeed(defaultZoomSpeed),
+    _defaultMoveSpeed(defaultMoveSpeed),
+    _defaultDeltaN(defaultDeltaN),
+    _defaultDeltaRot(defaultDeltaRot),
+    _defaultDeltaColor(defaultDeltaColor)
 {
 }
 
-bool KeyboardController::processKeyboardInput(SDL_Keycode sym, bool turboMode)
+bool KeyboardController::processKeyboardInput(int sym)
 {
     const coord_t multiplier = 10;
 
@@ -24,73 +39,113 @@ bool KeyboardController::processKeyboardInput(SDL_Keycode sym, bool turboMode)
     coord_t deltaRot = _defaultDeltaRot;
     coord_t deltaN = _defaultDeltaN;
 
+    bool turboMode = sym > 64 && sym < 91;
+
     if (turboMode) {
         _defaultZoomSpeed *= multiplier;
         _defaultMoveSpeed *= multiplier;
         _defaultDeltaRot *= multiplier;
         _defaultDeltaN *= multiplier;
+        sym += 32;
     }
 
     bool actionHappened = true;
 
     switch (sym) {
-        case SDLK_w:
+        case 'w':
             zoomIn();
             break;
-        case SDLK_s:
+        case 's':
             zoomOut();
             break;
-        case SDLK_UP:
+        case KEY_UP_ARROW:
             moveUp();
             break;
-        case SDLK_DOWN:
+        case KEY_DOWN_ARROW:
             moveDown();
             break;
-        case SDLK_LEFT:
+        case KEY_LEFT_ARROW:
             moveLeft();
             break;
-        case SDLK_RIGHT:
+        case KEY_RIGHT_ARROW:
             moveRight();
             break;
-        case SDLK_q:
+        case 'q':
             decreaseResolution();
             break;
-        case SDLK_e:
+        case 'e':
             increaseResolution();
             break;
-        case SDLK_a:
+        case 'a':
             amazingResolution();
             break;
-        case SDLK_d:
+        case 'd':
             shittyResolution();
             break;
-        case SDLK_i:
+        case 'i':
             toggleZoomState(PLUS);
             break;
-        case SDLK_o:
+        case 'o':
             toggleZoomState(MINUS);
             break;
-        case SDLK_k:
+        case 'k':
             toggleNState(PLUS);
             break;
-        case SDLK_l:
+        case 'l':
             toggleNState(MINUS);
             break;
-        case SDLK_n:
+        case 'n':
             toggleRotState(PLUS);
             break;
-        case SDLK_m:
+        case 'm':
             toggleRotState(MINUS);
             break;
-        case SDLK_x:
+        case 'x':
             rotateLeft();
             break;
-        case SDLK_c:
+        case 'c':
             rotateRight();
             break;
-        case SDLK_p:
+        case 'p':
             toggleChangeColorState();
             break;
+        case KEY_ESCAPE:
+            setQuitFlag();
+            break;
+        case 'r':
+            addCommand(new SetSaveImageCommand(!_renderer.getSaveImage()));
+            break;
+        case '1':
+            addCommand(new SetBlendModeCommand(NO_ALPHA));
+            break;
+        case '2':
+            addCommand(new SetBlendModeCommand(SMOOTH));
+            break;
+        case '3':           
+            addCommand(new SetBlendModeCommand(EPILEPSY));
+            break;
+        case '4':
+            addCommand(new SetBlendModeCommand(SATURATED));
+            break;
+        case KEY_F1:
+            addCommand(new SetTraceModeCommand(DISABLE));
+            break;
+        case KEY_F2:
+            addCommand(new SetTraceModeCommand(PERSIST));
+            break;
+        case KEY_F3:
+            addCommand(new SetTraceModeCommand(FADE_FILLED));
+            break;
+        case KEY_F4:
+            addCommand(new SetTraceModeCommand(FADE_ALL));
+            break;
+            /*case KEY_SPACE:
+                scoreEnabled = !scoreEnabled;
+                break;
+            case SDLK_BACKSPACE:
+                automaticController.undoLastBeat();
+                fractalRenderer.invalidate();
+                break;*/
         default:
             actionHappened = false;
     }
@@ -102,67 +157,71 @@ bool KeyboardController::processKeyboardInput(SDL_Keycode sym, bool turboMode)
         _defaultDeltaN = deltaN;
     }
 
+    if (actionHappened) {
+        executeAll();
+    }
+
     return actionHappened;
 }
 
 void KeyboardController::moveLeft()
 {
-    _fractal.move(LEFT, _defaultMoveSpeed);
+    addCommand(new DirectionMoveCommand(LEFT, _defaultMoveSpeed));
 }
 
 void KeyboardController::moveRight()
 {
-    _fractal.move(RIGHT, _defaultMoveSpeed);
+    addCommand(new DirectionMoveCommand(RIGHT, _defaultMoveSpeed));
 }
 
 void KeyboardController::moveUp()
 {
-    _fractal.move(UP, _defaultMoveSpeed);
+    addCommand(new DirectionMoveCommand(UP, _defaultMoveSpeed));
 }
 
 void KeyboardController::moveDown()
 {
-    _fractal.move(DOWN, _defaultMoveSpeed);
+    addCommand(new DirectionMoveCommand(DOWN, _defaultMoveSpeed));
 }
 
 void KeyboardController::zoomIn()
 {
-    _fractal.zoom(_defaultZoomSpeed);
+    addCommand(new ChangeZoomCommand(_defaultZoomSpeed));
 }
 
 void KeyboardController::zoomOut()
 {
-    _fractal.zoom(1 / _defaultZoomSpeed);
+    addCommand(new ChangeZoomCommand(1 / _defaultZoomSpeed));
 }
 
 void KeyboardController::increaseResolution()
 {
-    _fractal.changeMaxN(_defaultDeltaN);
+    addCommand(new ChangeResolutionCommand(_defaultDeltaN));
 }
 
 void KeyboardController::decreaseResolution()
 {
-    _fractal.changeMaxN(-_defaultDeltaN);
+    addCommand(new ChangeResolutionCommand(-_defaultDeltaN));
 }
 
 void KeyboardController::amazingResolution()
 {
-    _fractal.setMaxN(1024);
+    addCommand(new SetResolutionCommand(1024));
 }
 
 void KeyboardController::shittyResolution()
 {
-    _fractal.setMaxN(8);
+    addCommand(new SetResolutionCommand(8));
 }
 
 void KeyboardController::rotateLeft()
 {
-    _fractal.rotate(_defaultDeltaRot);
+    addCommand(new ChangeRotationCommand(_defaultDeltaRot));
 }
 
 void KeyboardController::rotateRight()
 {
-    _fractal.rotate(- _defaultDeltaRot);
+    addCommand(new ChangeRotationCommand(-_defaultDeltaRot));
 }
 
 void KeyboardController::toggleZoomState(State zoomState)
@@ -170,20 +229,20 @@ void KeyboardController::toggleZoomState(State zoomState)
     switch (zoomState) {
         case PLUS:
             if (_zoomSpeed > 1) {
-                _zoomSpeed = 1;
+                addCommand(new StopZoomCommand());
             } else {
-                _zoomSpeed = _defaultZoomSpeed;
+                addCommand(new StartZoomCommand(_defaultZoomSpeed));
             }
             break;
         case MINUS:
             if (_zoomSpeed < 1) {
-                _zoomSpeed = 1;
+                addCommand(new StopZoomCommand());
             } else {
-                _zoomSpeed = 1 / _defaultZoomSpeed;
+                addCommand(new StartZoomCommand(1 / _defaultZoomSpeed));
             }
             break;
         case ZERO:
-            _zoomSpeed = 1;
+            addCommand(new StopZoomCommand());
             break;
     }
 }
@@ -193,20 +252,20 @@ void KeyboardController::toggleNState(State nState)
     switch (nState) {
         case PLUS:
             if (_deltaN > 0) {
-                _deltaN = 0;
+                addCommand(new StopChangeResolutionCommand());
             } else {
-                _deltaN = _defaultDeltaN;
+                addCommand(new StartChangeResolutionCommand(_defaultDeltaN));
             }
             break;
         case MINUS:
             if (_deltaN < 0) {
-                _deltaN = 0;
+                addCommand(new StopChangeResolutionCommand());
             } else {
-                _deltaN = -_defaultDeltaN;
+                addCommand(new StartChangeResolutionCommand(-_defaultDeltaN));
             }
             break;
         case ZERO:
-            _deltaN = 0;
+            addCommand(new StopChangeResolutionCommand());
             break;
     }
 }
@@ -216,29 +275,29 @@ void KeyboardController::toggleRotState(State rotState)
     switch (rotState) {
         case PLUS:
             if (_deltaRot > 0) {
-                _deltaRot = 0;
+                addCommand(new StopRotateCommand());
             } else {
-                _deltaRot = _defaultDeltaRot;
+                addCommand(new StartRotateCommand(_defaultDeltaRot));
             }
             break;
         case MINUS:
             if (_deltaRot < 0) {
-                _deltaRot = 0;
+                addCommand(new StopRotateCommand());
             } else {
-                _deltaRot = -_defaultDeltaRot;
+                addCommand(new StartRotateCommand(-_defaultDeltaRot));
             }
             break;
         case ZERO:
-            _deltaRot = 0;
+            addCommand(new StopRotateCommand());
             break;
     }
 }
 
 void KeyboardController::toggleChangeColorState()
 {
-    if (isEmptyColor(_deltaColor)) {
-        _deltaColor = _defaultDeltaColor;
+    if (_deltaColor.isReal()) {
+        addCommand(new StartChangeColorsCommand(_defaultDeltaColor));
     } else {
-        _deltaColor = {0,0,0,0};
+        addCommand(new StopChangeColorsCommand());
     }
 }

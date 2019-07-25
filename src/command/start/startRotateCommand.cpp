@@ -1,4 +1,5 @@
 #include "startRotateCommand.h"
+#include "../../controller/controller.h"
 
 StartRotateCommand::StartRotateCommand(coord_t amount) : _amount(amount) {}
 

@@ -13,5 +13,5 @@ void StartChangeColorsCommand::executeOnce(Controller &c)
 void StartChangeColorsCommand::undo(Controller &c)
 {
     // TODO
-    c.setDeltaColor({-_deltaColor.r, -_deltaColor.g, - _deltaColor.b, - _deltaColor.a});
+    c.setDeltaColor(-_deltaColor);
 }

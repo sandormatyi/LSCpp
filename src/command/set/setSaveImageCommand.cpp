@@ -1,6 +1,11 @@
 #include "setSaveImageCommand.h"
+#include "../../controller/controller.h"
+#include "../../render/fractalRenderer.h"
 
-SetSaveImageCommand::SetSaveImageCommand(bool saveImage) : _saveImage(saveImage) {}
+SetSaveImageCommand::SetSaveImageCommand(bool saveImage) :
+    _saveImage(saveImage)
+{
+}
 
 void SetSaveImageCommand::executeOnce(Controller &c)
 {

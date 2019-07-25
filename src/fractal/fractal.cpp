@@ -1,5 +1,7 @@
-#include <math.h>
+#include <cmath>
 #include "fractal.h"
+
+#define M_PI 3.141592653589793238462643383279502884197169399375105820974944592307816406286
 
 Fractal::Fractal(coord_t xCenter, coord_t yCenter, coord_t zoom, coord_t maxN) :
         _xCenter(xCenter),
@@ -16,8 +18,8 @@ coord_t Fractal::getFractalValue(int screenX, int screenWidth, int screenY, int 
 
     coord_t xMapped = interpolate(screenX, 0, screenWidth, (-1 / _zoom), (1 / _zoom));
     coord_t yMapped = interpolate(screenY, 0, screenHeight, (-1 / _zoom) * ratio, (1 / _zoom) * ratio);
-
-    if (fabs(_rotAngle) > eps) {
+    
+    if (std::fabs(_rotAngle) > eps) {
         coord_t angleRad = (_rotAngle) * (M_PI / 180); // Convert to radians
 
         coord_t xRotated = cos(angleRad) * (xMapped) - sin(angleRad) * (yMapped);

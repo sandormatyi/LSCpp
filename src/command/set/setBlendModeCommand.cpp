@@ -1,4 +1,6 @@
 #include "setBlendModeCommand.h"
+#include "../../controller/controller.h"
+#include "../../render/fractalRenderer.h"
 
 SetBlendModeCommand::SetBlendModeCommand(BlendMode blendMode) :
 _blendMode(blendMode)

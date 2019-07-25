@@ -2,11 +2,14 @@
 #include <cmath>
 #include "controller.h"
 #include "../colors.h"
+#include "../fractal/fractal.h"
+#include "../render/fractalRenderer.h"
+
+bool Controller::_quit = false;
 
 Controller::Controller(Fractal &fractal, FractalRenderer &renderer) :
-        _fractal(fractal), _renderer(renderer)
+    _fractal(fractal), _renderer(renderer)
 {
-
 }
 
 Fractal & Controller::getFractal()
@@ -68,8 +71,8 @@ bool Controller::doAutomaticTransformations()
         invalidateImage = true;
     }
 
-    if (!isEmptyColor(_deltaColor)) {
-        changeColors(_deltaColor.r, _deltaColor.g, _deltaColor.b, _deltaColor.a);
+    if (!_deltaColor.isReal()) {
+        changeColors(_deltaColor);
         invalidateImage = true;
     }
 
@@ -86,7 +89,7 @@ void Controller::setDeltaColor(float_color_t color)
     _deltaColor = color;
 }
 
-bool Controller::isQuitFlagSet() const
+bool Controller::isQuitFlagSet()
 {
     return _quit;
 }

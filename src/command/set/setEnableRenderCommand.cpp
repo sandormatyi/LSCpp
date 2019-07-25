@@ -1,4 +1,6 @@
 #include "setEnableRenderCommand.h"
+#include "../../controller/controller.h"
+#include "../../render/fractalRenderer.h"
 
 SetEnableRenderCommand::SetEnableRenderCommand(bool enable)
 {

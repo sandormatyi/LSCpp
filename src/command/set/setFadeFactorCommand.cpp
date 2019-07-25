@@ -1,4 +1,6 @@
 #include "setFadeFactorCommand.h"
+#include "../../controller/controller.h"
+#include "../../render/fractalRenderer.h"
 
 SetFadeFactorCommand::SetFadeFactorCommand(coord_t amount)
 {

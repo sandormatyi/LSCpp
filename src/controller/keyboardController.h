@@ -1,11 +1,10 @@
 #ifndef MANDELBROT_KEYBOARDCONTROLLER_H
 #define MANDELBROT_KEYBOARDCONTROLLER_H
 
+#include "UIController.h"
 
-#include <SDL_keycode.h>
-#include "controller.h"
 
-class KeyboardController : public Controller
+class KeyboardController : public UIController
 {
 public:
     enum State
@@ -19,8 +18,10 @@ public:
     KeyboardController(Fractal &fractal, FractalRenderer &renderer, coord_t defaultZoomSpeed,
                        coord_t defaultMoveSpeed, coord_t defaultDeltaN, coord_t defaultDeltaRot,
                        float_color_t defaultDeltaColor);
-    bool processKeyboardInput(SDL_Keycode sym, bool turboMode);
 
+    bool processKeyboardInput(int sym);
+
+private:
     void moveLeft();
     void moveRight();
     void moveUp();
@@ -43,7 +44,6 @@ public:
     void toggleRotState(State rotState);
     void toggleChangeColorState();
 
-private:
     coord_t _defaultZoomSpeed;
     coord_t _defaultMoveSpeed;
     coord_t _defaultDeltaN;

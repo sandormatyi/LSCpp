@@ -3,6 +3,7 @@
 
 
 #include "command.h"
+#include <string>
 
 class LogCommand : public Command
 {

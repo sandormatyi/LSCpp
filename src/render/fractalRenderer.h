@@ -2,82 +2,48 @@
 #define MANDELBROT_FRACTALRENDERER_H
 
 #include <string>
-#include <SDL_types.h>
-#include <SDL_render.h>
-#include <SDL_atomic.h>
 #include <ctime>
+#include <atomic>
+#include <opencv2/core.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
 #include "../fractal/fractal.h"
 #include "renderParams.h"
+#include "../types.h"
 
-enum BlendMode
-{
-    NO_ALPHA = 0,
-    SMOOTH = 1,
-    EPILEPSY = 2
-};
-
-enum ColorMode
-{
-    LINEAR = 0,
-    HISTOGRAM = 1
-};
-
-enum TraceMode
-{
-    DISABLE = 0,
-    PERSIST = 1,
-    FADE_FILLED = 2,
-    FADE_ALL = 3
-};
 
 std::string to_string(BlendMode blendMode);
-std::string to_string(ColorMode colorMode);
 std::string to_string(TraceMode traceMode);
-
-struct thread_data
-{
-    static const int max = TEXTURE_WIDTH * TEXTURE_HEIGHT / THREAD_NUMBER;
-    int thread_number;
-    coord_t n[max];
-    const Fractal *fractal;
-    SDL_atomic_t *counter;
-};
 
 
 class FractalRenderer
 {
 public:
-    FractalRenderer(Fractal &fractal, SDL_Renderer *renderer, const std::string &folderName);
-    ~FractalRenderer();
+    FractalRenderer(Fractal &fractal, const std::string &folderName);
 
     void invalidate();
     void render();
 
-    void setEnableRender(bool enable);
-
     bool getSaveImage() const;
 
     void setFadeFactor(coord_t fadeFactor);
+    void setEnableRender(bool enable);
     void setSaveImage(bool saveImage);
     void setBlendMode(BlendMode blendMode);
-    void setColorMode(ColorMode colorMode);
     void setTraceMode(TraceMode traceMode);
+    void setColorMap(cv::ColormapTypes colorMap);
 
 private:
-    Uint64 calculateFractalValues();
-    Uint64 colorPixels();
-    Uint64 saveImage(SDL_Texture *texture);
+    uint64_t calculateFractalValues(cv::OutputArray fractalValues);
+    void equalizeByHistogram(cv::InputOutputArray fractalValues);
+    uint64_t colorPixels(cv::InputArray fractalValues, cv::InputOutputArray renderedImage);
+    uint64_t morphImage(cv::InputOutputArray image);
+    uint64_t saveImage(cv::InputArray image);
 
-    void drawInfoText(Uint64 calculateTime, Uint64 colorTime, Uint64 saveTime);
-    void drawGreenCrosshair();
-
-    void colorByHistogram();
-    void colorLinear();
-    void colorPixel(const SDL_Color &c, int offset);
+    void drawInfoText(cv::InputOutputArray result, uint64_t calculateTime, uint64_t colorTime, uint64_t saveTime);
+    void drawGreenCrosshair(cv::InputOutputArray result);
 
 private:
     Fractal &_fractal;
-    SDL_Renderer *_renderer;
 
     bool _isValid = false;
     bool _enableRender = true;
@@ -85,14 +51,13 @@ private:
     const std::string _folderName;
 
     coord_t _fadeFactor = 0.75;
-    BlendMode _blendMode = NO_ALPHA;
-    ColorMode _colorMode = LINEAR;
-    TraceMode _traceMode = DISABLE;
+    bool _histogram;
+    BlendMode _blendMode;
+    TraceMode _traceMode;
+    cv::ColormapTypes _colorMap;
 
-    int _iterationN = 1;
-
-    Uint8 *_pixels;
-    thread_data *_data;
+    unsigned int _iterationN = 1;
+    cv::Mat _renderedImage;
 };
 
 

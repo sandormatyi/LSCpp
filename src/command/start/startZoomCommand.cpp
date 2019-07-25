@@ -1,4 +1,5 @@
 #include "startZoomCommand.h"
+#include "../../controller/controller.h"
 
 StartZoomCommand::StartZoomCommand(coord_t amount) : _amount(amount) {}
 

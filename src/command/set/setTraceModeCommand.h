@@ -3,6 +3,7 @@
 
 
 #include "../command.h"
+#include "../../render/fractalRenderer.h"
 
 class SetTraceModeCommand : public Command
 {

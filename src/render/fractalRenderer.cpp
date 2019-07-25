@@ -1,49 +1,41 @@
-#include <SDL_timer.h>
 #include <string>
 #include <cstring>
-#include <SDL_thread.h>
+#include <cstdlib>
 #include <sstream>
-#include <io.h>
-#include <SDL_image.h>
 #include <cmath>
 #include <iomanip>
+#include <atomic>
 #include "fractalRenderer.h"
 #include "../colors.h"
-#include "renderedText.h"
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgcodecs.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/core/utility.hpp>
+#include <chrono>  // for high_resolution_clock
+#include <direct.h> // _mkdir
+#include <thread>
+#include <map>
 
-static int drawPointsInThread(void *data)
+static int alpha = 100;
+static int beta = 100;
+
+cv::VideoCapture capture;
+
+FractalRenderer::FractalRenderer(Fractal &fractal, const std::string &folderName) :
+    _fractal(fractal),
+    _folderName(std::string("C:/Users/matyi/Pictures/fractal/") + folderName + "_" + std::to_string(time(nullptr))),
+    _histogram(true),
+    _blendMode(NO_ALPHA),
+    _traceMode(DISABLE),
+    _renderedImage(SCREEN_HEIGHT, SCREEN_WIDTH, CV_8UC4),
+    _colorMap(cv::ColormapTypes::COLORMAP_HSV)
 {
-    thread_data *threadData = (thread_data *) data;
+    capture.open(0);
+    cv::namedWindow("Niki funkciója");
 
-    for (int i = 0; i < thread_data::max; ++i) {
-        int x = (i % TEXTURE_WIDTH);
-        int y = i / TEXTURE_WIDTH + TEXTURE_HEIGHT * threadData->thread_number / THREAD_NUMBER;
-        threadData->n[i] = threadData->fractal->getFractalValue(x, TEXTURE_WIDTH, y, TEXTURE_HEIGHT);
-    }
+    cv::createTrackbar("Alpha", "Niki funkciója", &alpha, 100);
+    cv::createTrackbar("Beta", "Niki funkciója", &beta, 100);
 
-    SDL_AtomicDecRef(threadData->counter);
-
-    return 0;
-}
-
-FractalRenderer::FractalRenderer(Fractal &fractal, SDL_Renderer *renderer, const std::string &folderName) :
-        _fractal(fractal),
-        _renderer(renderer),
-        _folderName(std::string("C:/Users/matyi/Pictures/fractal/") + folderName + "_" + std::to_string(time(nullptr)))
-{
-    _pixels = (Uint8 *) malloc(TEXTURE_WIDTH * TEXTURE_HEIGHT * 4);
-    _data = (thread_data *) malloc(THREAD_NUMBER * sizeof(thread_data));
-}
-
-FractalRenderer::~FractalRenderer()
-{
-    delete (_pixels);
-    delete (_data);
-}
-
-void FractalRenderer::invalidate()
-{
-    _isValid = false;
 }
 
 void FractalRenderer::setBlendMode(BlendMode blendMode)
@@ -51,267 +43,14 @@ void FractalRenderer::setBlendMode(BlendMode blendMode)
     _blendMode = blendMode;
 }
 
-void FractalRenderer::setColorMode(ColorMode colorMode)
-{
-    _colorMode = colorMode;
-}
-
 void FractalRenderer::setTraceMode(TraceMode traceMode)
 {
     _traceMode = traceMode;
 }
 
-void FractalRenderer::setSaveImage(bool saveImage)
+void FractalRenderer::setColorMap(cv::ColormapTypes colorMap)
 {
-    _saveImage = saveImage;
-}
-
-void FractalRenderer::render()
-{
-    static SDL_Texture *texture = SDL_CreateTexture(
-            _renderer,
-            SDL_PIXELFORMAT_ARGB8888,
-            SDL_TEXTUREACCESS_STREAMING,
-            TEXTURE_WIDTH, TEXTURE_HEIGHT
-    );
-
-    if (_isValid)
-        return;
-
-    //Clear screen
-    SDL_SetRenderDrawColor(_renderer, 0x00, 0x00, 0x00, 0x00);
-    SDL_RenderClear(_renderer);
-
-    Uint64 calculateTime = 0;
-    Uint64 colorTime = 0;
-    Uint64 saveTime = 0;
-
-    if (_enableRender) {
-        calculateTime = calculateFractalValues();
-
-        colorTime = colorPixels();
-
-        SDL_UpdateTexture(
-                texture,
-                nullptr,
-                _pixels,
-                TEXTURE_WIDTH * 4
-        );
-
-        SDL_RenderCopy(_renderer, texture, nullptr, nullptr);
-
-        if (_saveImage) {
-            saveTime = saveImage(texture);
-        }
-    }
-
-    drawInfoText(calculateTime, colorTime, saveTime);
-    drawGreenCrosshair();
-
-    //Update screen
-    SDL_RenderPresent(_renderer);
-
-    _iterationN++;
-
-    _isValid = true;
-}
-
-void FractalRenderer::drawInfoText(Uint64 calculateTime, Uint64 colorTime, Uint64 saveTime)
-{
-    // Draw text info
-    static SDL_Texture *texture = nullptr;
-
-    SDL_DestroyTexture(texture);
-
-    const static Uint64 freq = SDL_GetPerformanceFrequency();
-    const Uint64 calculateMs = calculateTime * 1000 / freq;
-    const Uint64 colorMs = colorTime * 1000 / freq;
-    const Uint64 saveMs = saveTime * 1000 / freq;
-
-    std::stringstream ss;
-    // ss << _fractal.getFractalName() << std::endl;
-
-    ss << "X: " << std::setprecision(15) << _fractal.getXCenter() << std::endl;
-    ss << "Y: " << std::setprecision(15) << _fractal.getYCenter() << std::endl;
-    ss << "Zoom: " << _fractal.getZoom() << std::endl;
-    ss << "Resolution: " << _fractal.getMaxN() << std::endl;
-    ss << "Rotation: " << _fractal.getRotAngle() << std::endl;
-    ss << "Render time: " << calculateMs + colorMs + saveMs << " ms (" << calculateMs << " + " << colorMs << " + "
-       << saveMs << ")" << std::endl;
-    // ss << "Threads: " << THREAD_NUMBER << std::endl;
-    ss << "Color mode: " << to_string(_colorMode) << std::endl;
-    ss << "Blend mode: " << to_string(_blendMode) << std::endl;
-    ss << "Trace mode: " << to_string(_traceMode) << std::endl;
-    if (_saveImage) {
-        ss << "Image number " << _iterationN - 1;
-    }
-
-    RenderedText text = textToTexture(ss.str(), _renderer, 600);
-    texture = text._texture;
-
-    SDL_Rect rect = {0, 0, text._width, text._height};
-    SDL_RenderCopyEx(_renderer, text._texture, nullptr, &rect, 0.0, nullptr, SDL_FLIP_NONE);
-}
-
-Uint64 FractalRenderer::calculateFractalValues()
-{
-    SDL_atomic_t counter{THREAD_NUMBER};
-
-    const Uint64 start = SDL_GetPerformanceCounter();
-
-    for (int i = 0; i < THREAD_NUMBER; ++i) {
-        _data[i].counter = &counter;
-        _data[i].fractal = &_fractal;
-        _data[i].thread_number = i;
-        char thread_name[10];
-        strcpy(thread_name, ("Thread " + std::to_string(i)).c_str());
-
-        SDL_CreateThread(drawPointsInThread, thread_name, &_data[i]);
-    }
-
-    while (SDL_AtomicGet(&counter) > 0);
-
-    const Uint64 end = SDL_GetPerformanceCounter();
-    return end - start;
-}
-
-Uint64 FractalRenderer::colorPixels()
-{
-    const Uint64 start = SDL_GetPerformanceCounter();
-
-    if (_traceMode == DISABLE) {
-        memset(_pixels, 0, TEXTURE_WIDTH * TEXTURE_HEIGHT * 4);
-    } else if (_traceMode == FADE_FILLED) {
-
-    }
-
-    switch (_colorMode) {
-        case HISTOGRAM:
-            colorByHistogram();
-            break;
-        case LINEAR:
-            colorLinear();
-            break;
-    }
-
-    const Uint64 end = SDL_GetPerformanceCounter();
-    return end - start;
-}
-
-void FractalRenderer::colorByHistogram()
-{
-    const int maxN = (int) (_fractal.getMaxN() + 1);
-
-    int histogram[maxN];
-    memset(histogram, 0, maxN * sizeof(int));
-
-    for (int i = 0; i < THREAD_NUMBER; ++i) {
-        const thread_data *threadData = &_data[i];
-
-        for (int j = 0; j < thread_data::max; ++j) {
-            histogram[(int) threadData->n[j]]++;
-        }
-    }
-
-    coord_t total = 0;
-    for (int i = 0; i < maxN; ++i) {
-        total += histogram[i];
-    }
-
-    for (int i = 0; i < THREAD_NUMBER; ++i) {
-        const thread_data *threadData = &_data[i];
-
-        for (int j = 0; j < thread_data::max; ++j) {
-            coord_t n = threadData->n[j];
-            const unsigned int offset = 4 * (threadData->thread_number * thread_data::max + j);
-
-            if (_traceMode == FADE_ALL) {
-                _pixels[offset + 0] *= _fadeFactor;
-                _pixels[offset + 1] *= _fadeFactor;
-                _pixels[offset + 2] *= _fadeFactor;
-            }
-
-            if (n > 0) {
-                coord_t hue = 0.0;
-                for (int k = 0; k <= n; ++k) {
-                    hue += histogram[k] / total;
-                }
-
-                int colorIndex = getColorIndex(hue);
-                float_color_t &c = getColor(colorIndex);
-
-                colorPixel(to_SDL_Color(c), offset);
-            }
-        }
-    }
-}
-
-void FractalRenderer::colorLinear()
-{
-    const coord_t maxN = _fractal.getMaxN();
-
-    for (int i = 0; i < THREAD_NUMBER; ++i) {
-        const thread_data *threadData = &_data[i];
-
-        for (int j = 0; j < thread_data::max; ++j) {
-            const unsigned int x = j % TEXTURE_WIDTH;
-            const unsigned int y = j / TEXTURE_WIDTH + threadData->thread_number * TEXTURE_HEIGHT / THREAD_NUMBER;
-            const unsigned int offset = (TEXTURE_WIDTH * 4 * y) + x * 4;
-
-            if (_traceMode == FADE_ALL) {
-                _pixels[offset + 0] *= _fadeFactor;
-                _pixels[offset + 1] *= _fadeFactor;
-                _pixels[offset + 2] *= _fadeFactor;
-            }
-
-            coord_t n = threadData->n[j];
-
-            if (n > 0) {
-                coord_t f = n / maxN;
-                int colorIndex = getColorIndex(f);
-                float_color_t &c1 = getColor(colorIndex);
-                float_color_t &c2 = getColor(colorIndex + 1);
-                float_color_t c = interpolate(c1, c2, f - (int) (f));
-
-                colorPixel(to_SDL_Color(c), offset);
-            }
-        }
-    }
-}
-
-void FractalRenderer::colorPixel(const SDL_Color &c, int offset)
-{
-    float floatAlpha = c.a / 255.0;
-    float oldAlpha = 1 - floatAlpha;
-
-    if (_traceMode == FADE_FILLED) {
-        _pixels[offset + 0] *= _fadeFactor;
-        _pixels[offset + 1] *= _fadeFactor;
-        _pixels[offset + 2] *= _fadeFactor;
-    }
-
-    switch (_blendMode) {
-        case NO_ALPHA:
-            _pixels[offset + 0] = c.b;
-            _pixels[offset + 1] = c.g;
-            _pixels[offset + 2] = c.r;
-            _pixels[offset + 3] = c.a;
-            break;
-        case EPILEPSY:
-            _pixels[offset + 0] += (Uint8) (floatAlpha * c.b);
-            _pixels[offset + 1] += (Uint8) (floatAlpha * c.g);
-            _pixels[offset + 2] += (Uint8) (floatAlpha * c.r);
-            _pixels[offset + 3] = (Uint8) (floatAlpha * c.a);
-            break;
-        case SMOOTH:
-            _pixels[offset + 0] = (Uint8) ((oldAlpha * _pixels[offset + 0]) + (floatAlpha * c.b));
-            _pixels[offset + 1] = (Uint8) ((oldAlpha * _pixels[offset + 1]) + (floatAlpha * c.g));
-            _pixels[offset + 2] = (Uint8) ((oldAlpha * _pixels[offset + 2]) + (floatAlpha * c.r));
-            _pixels[offset + 3] = (Uint8) (floatAlpha * c.a);
-            break;
-        default:
-            break;
-    }
+    _colorMap = colorMap;
 }
 
 bool FractalRenderer::getSaveImage() const
@@ -319,39 +58,9 @@ bool FractalRenderer::getSaveImage() const
     return _saveImage;
 }
 
-Uint64 FractalRenderer::saveImage(SDL_Texture *texture)
+void FractalRenderer::setSaveImage(bool saveImage)
 {
-    const Uint64 start = SDL_GetPerformanceCounter();
-
-    static bool folderExists = false;
-    if (!folderExists) {
-        mkdir(_folderName.c_str());
-        folderExists = true;
-    }
-
-    std::string filePath = _folderName + "/" + std::to_string(_iterationN) + ".png";
-
-    SDL_Texture *target = SDL_GetRenderTarget(_renderer);
-    SDL_SetRenderTarget(_renderer, texture);
-    int width, height;
-    SDL_QueryTexture(texture, nullptr, nullptr, &width, &height);
-    SDL_Surface *surface = SDL_CreateRGBSurface(0, width, height, 32, 0, 0, 0, 0);
-    SDL_RenderReadPixels(_renderer, nullptr, surface->format->format, surface->pixels, surface->pitch);
-    IMG_SavePNG(surface, filePath.c_str());
-    SDL_FreeSurface(surface);
-    SDL_SetRenderTarget(_renderer, target);
-
-    const Uint64 end = SDL_GetPerformanceCounter();
-    return end - start;
-}
-
-void FractalRenderer::drawGreenCrosshair()
-{
-    SDL_SetRenderDrawColor(_renderer, 50, 255, 50, 0xFF);
-    SDL_RenderDrawLine(_renderer, TEXTURE_WIDTH / 2 - 10, TEXTURE_HEIGHT / 2 - 10, TEXTURE_WIDTH / 2 + 10,
-                       TEXTURE_HEIGHT / 2 + 10);
-    SDL_RenderDrawLine(_renderer, TEXTURE_WIDTH / 2 - 10, TEXTURE_HEIGHT / 2 + 10, TEXTURE_WIDTH / 2 + 10,
-                       TEXTURE_HEIGHT / 2 - 10);
+    _saveImage = saveImage;
 }
 
 void FractalRenderer::setEnableRender(bool enable)
@@ -364,6 +73,241 @@ void FractalRenderer::setFadeFactor(coord_t fadeFactor)
     _fadeFactor = fadeFactor;
 }
 
+void FractalRenderer::invalidate()
+{
+    _isValid = false;
+}
+
+void FractalRenderer::render()
+{
+    if (_isValid)
+        return;
+
+    uint64_t calculateTime = 0;
+    uint64_t colorTime = 0;
+    uint64_t saveTime = 0;
+    uint64_t morphTime = 0;
+
+    if (_enableRender) {
+        cv::Mat fractalValues(_renderedImage.rows, _renderedImage.cols, CV_32FC1);
+
+        calculateTime = calculateFractalValues(fractalValues);
+
+        colorTime = colorPixels(fractalValues, _renderedImage);
+
+        //morphTime = morphImage(_renderedImage);
+
+        if (_saveImage) {
+            saveTime = saveImage(_renderedImage);
+        }
+    }
+
+    cv::Mat copyWithText;
+    _renderedImage.copyTo(copyWithText);
+
+    drawInfoText(copyWithText, calculateTime, colorTime, saveTime);
+    drawGreenCrosshair(copyWithText);
+
+    cv::imshow(_fractal.getFractalName(), copyWithText);
+
+    _iterationN++;
+
+    _isValid = true;
+}
+
+uint64_t FractalRenderer::calculateFractalValues(cv::OutputArray fractalValues)
+{
+    const auto start = std::chrono::high_resolution_clock::now();
+
+    cv::Mat resultMat = fractalValues.getMat();
+
+    cv::parallel_for_(cv::Range(0, SCREEN_WIDTH * SCREEN_HEIGHT), [&](const cv::Range& range) {
+        for (int r = range.start; r < range.end; r++) {
+            int x = r % SCREEN_WIDTH;
+            int y = r / SCREEN_WIDTH;
+
+            fractal_value_t n = _fractal.getFractalValue(x, SCREEN_WIDTH, y, SCREEN_HEIGHT);
+            resultMat.at<fractal_value_t>(y, x) = n;
+        }
+    });
+
+    const auto end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> diff = end - start;
+    return (uint64_t)(diff.count() * 1000);
+}
+
+uint64_t FractalRenderer::colorPixels(cv::InputArray fractalValues, cv::InputOutputArray renderedImage)
+{
+    const auto start = std::chrono::high_resolution_clock::now();
+
+    if (_traceMode == DISABLE) {
+        renderedImage.getMat() = cv::Scalar{ 0,0,0,0 };
+    } else if (_traceMode == FADE_ALL) {
+        renderedImage.getMat() *= _fadeFactor;
+    }
+
+    cv::Mat pixelValues(fractalValues.getMat());
+    if (_histogram) {
+        equalizeByHistogram(pixelValues);
+    }
+
+    pixelValues.convertTo(pixelValues, CV_8UC3, 255.0 / _fractal.getMaxN());
+
+    mapGreyScaleImageToBGRA(pixelValues, _colorMap);
+
+    morphImage(pixelValues);
+
+    if (_blendMode == NO_ALPHA) {
+        renderedImage.assign(pixelValues);
+    } else if (_blendMode == EPILEPSY) {
+        double alpha = 0.5;
+
+        cv::Mat renderedImageMat = renderedImage.getMat();
+        pixelValues.forEach<uint8_color_t>([&](uint8_color_t &pixel, const int position[]) {
+            uint8_color_t &oldPixel = renderedImageMat.at<uint8_color_t>(position[0], position[1]);
+            oldPixel[0] += (pixel[0] * alpha);
+            oldPixel[1] += (pixel[1] * alpha);
+            oldPixel[2] += (pixel[2] * alpha);
+            oldPixel[3] = pixel[3];
+        });
+    } else if (_blendMode == SMOOTH) {
+        double alpha = 0.5;
+        double oldAlpha = 1 - alpha;
+
+        cv::addWeighted(renderedImage, oldAlpha, pixelValues, alpha, 1, renderedImage);
+    } else if (_blendMode == SATURATED) {
+        double alpha = 0.5;
+
+        renderedImage.getMat() += (pixelValues * alpha);
+    }
+
+    const auto end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> diff = end - start;
+    return (uint64_t)(diff.count() * 1000);
+}
+
+void FractalRenderer::equalizeByHistogram(cv::InputOutputArray fractalValues)
+{
+    const int maxN = (int)(_fractal.getMaxN() + 1);
+
+    int histSize = maxN;
+    float range[] = { 0, (float)maxN }; // the upper boundary is exclusive
+    const float *histRange = { range };
+    int channels[] = { 0 };
+
+    cv::Mat hist;
+    cv::calcHist(&fractalValues.getMat(), 1, channels, cv::Mat(), hist, 1, &histSize, &histRange, true, false);
+    hist.convertTo(hist, CV_16UC1);
+
+    // Calculate hue lookup table
+    std::map<uint16_t, fractal_value_t> nToHue;
+    fractal_value_t totalHue = 0;
+    for (int k = 0; k < maxN; ++k) {
+        totalHue += hist.at<uint16_t>(k);
+        nToHue[k] = totalHue;
+    }
+    const double rec_totalHue = maxN / totalHue;
+    for (int k = 0; k < maxN; ++k) {
+        nToHue[k] *= rec_totalHue;
+    }
+
+    cv::parallel_for_(cv::Range(0, SCREEN_WIDTH*SCREEN_HEIGHT), [&](const cv::Range& range) {
+        for (int i = range.start; i < range.end; ++i) {
+            const unsigned int x = i % TEXTURE_WIDTH;
+            const unsigned int y = i / TEXTURE_WIDTH;
+
+            fractal_value_t &n = fractalValues.getMat().at<fractal_value_t>(y, x);
+            n = nToHue[n];
+        }
+    });
+}
+
+uint64_t FractalRenderer::morphImage(cv::InputOutputArray image)
+{
+    const auto start = std::chrono::high_resolution_clock::now();
+
+    if (!image.empty()) {
+        
+
+        cv::Mat frame;
+        capture >> frame;
+
+        cv::Mat &imageMat = image.getMatRef();
+
+        cv::resize(frame, frame, cv::Size(image.cols(), image.rows()));
+        cv::cvtColor(frame, frame, cv::COLOR_BGR2BGRA);
+
+        cv::addWeighted(imageMat, alpha / 100.0, frame, beta / 100.0, 0, imageMat);
+    }
+
+    const auto end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> diff = end - start;
+    return (uint64_t)(diff.count() * 1000);
+}
+
+uint64_t FractalRenderer::saveImage(cv::InputArray image)
+{
+    const auto start = std::chrono::high_resolution_clock::now();
+
+    static bool folderExists = false;
+    if (!folderExists) {
+        _mkdir(_folderName.c_str());
+        folderExists = true;
+    }
+
+    std::string filePath = _folderName + "/" + std::to_string(_iterationN) + ".png";
+
+    cv::imwrite(filePath, image);
+
+    const auto end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> diff = end - start;
+    return (uint64_t)(diff.count() * 1000);
+}
+
+void FractalRenderer::drawInfoText(cv::InputOutputArray result, uint64_t calculateTime, uint64_t colorTime, uint64_t saveTime)
+{
+    std::stringstream ss;
+    // ss << _fractal.getFractalName() << std::endl;
+
+    ss << "X: " << std::setprecision(15) << _fractal.getXCenter() << std::endl;
+    ss << "Y: " << std::setprecision(15) << _fractal.getYCenter() << std::endl;
+    ss << "Zoom: " << _fractal.getZoom() << std::endl;
+    ss << "Resolution: " << _fractal.getMaxN() << std::endl;
+    ss << "Rotation: " << _fractal.getRotAngle() << std::endl;
+    ss << "Render time: " << calculateTime + colorTime + saveTime << " ms (" << calculateTime << " + " << colorTime << " + "
+        << saveTime << ")" << std::endl;
+    ss << "Histogram enabled: " << _histogram << std::endl;
+    ss << "Blend mode: " << to_string(_blendMode) << std::endl;
+    ss << "Trace mode: " << to_string(_traceMode) << std::endl;
+    if (_saveImage) {
+        ss << "Image number " << _iterationN - 1 << std::endl;
+    }
+
+    std::string line;
+    int y = 25;
+    while (!std::getline(ss, line).eof()) {
+        cv::putText(result, line, cv::Point(0, y), cv::FONT_HERSHEY_DUPLEX, 0.6, 0, 2);
+        cv::putText(result, line, cv::Point(0, y), cv::FONT_HERSHEY_DUPLEX, 0.6, { 255, 255, 255 });
+        y += 25;
+    }
+}
+
+void FractalRenderer::drawGreenCrosshair(cv::InputOutputArray result)
+{
+    const cv::Scalar colorGreen = cv::Scalar(50, 255, 50);
+
+    cv::line(result,
+        { TEXTURE_WIDTH / 2 - 10, TEXTURE_HEIGHT / 2 - 10 },
+        { TEXTURE_WIDTH / 2 + 10, TEXTURE_HEIGHT / 2 + 10 },
+        colorGreen, 1, cv::LineTypes::LINE_AA);
+
+    cv::line(result,
+        { TEXTURE_WIDTH / 2 - 10, TEXTURE_HEIGHT / 2 + 10 },
+        { TEXTURE_WIDTH / 2 + 10, TEXTURE_HEIGHT / 2 - 10 },
+        colorGreen, 1, cv::LineTypes::LINE_AA);
+}
+
+
 std::string to_string(BlendMode blendMode)
 {
     switch (blendMode) {
@@ -373,19 +317,10 @@ std::string to_string(BlendMode blendMode)
             return "SMOOTH";
         case EPILEPSY:
             return "EPILEPSY";
+        case SATURATED:
+            return "SATURATED";
     }
     throw std::invalid_argument("blendMode");
-}
-
-std::string to_string(ColorMode colorMode)
-{
-    switch (colorMode) {
-        case LINEAR:
-            return "LINEAR";
-        case HISTOGRAM:
-            return "HISTOGRAM";
-    }
-    throw std::invalid_argument("colorMode");
 }
 
 std::string to_string(TraceMode traceMode)
@@ -402,4 +337,3 @@ std::string to_string(TraceMode traceMode)
     }
     throw std::invalid_argument("traceMode");
 }
-

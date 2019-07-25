@@ -1,9 +1,7 @@
 #ifndef MANDELBROT_CHANGECOLORSCOMMAND_H
 #define MANDELBROT_CHANGECOLORSCOMMAND_H
 
-#include <SDL_types.h>
 #include "../command.h"
-#include "../../colors.h"
 
 class ChangeColorsCommand : public Command
 {

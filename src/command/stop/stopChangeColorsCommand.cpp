@@ -1,4 +1,5 @@
 #include "stopChangeColorsCommand.h"
+#include "../../controller/controller.h"
 
 void StopChangeColorsCommand::executeOnce(Controller &c)
 {

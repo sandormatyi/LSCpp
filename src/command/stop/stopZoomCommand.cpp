@@ -1,4 +1,5 @@
 #include "stopZoomCommand.h"
+#include "../../controller/controller.h"
 
 void StopZoomCommand::executeOnce(Controller &c)
 {
