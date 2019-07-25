@@ -16,6 +16,10 @@
 #include <thread>
 #include <map>
 
+static int alpha = 100;
+static int beta = 100;
+
+cv::VideoCapture capture;
 
 FractalRenderer::FractalRenderer(Fractal &fractal, const std::string &folderName) :
     _fractal(fractal),
@@ -26,6 +30,12 @@ FractalRenderer::FractalRenderer(Fractal &fractal, const std::string &folderName
     _renderedImage(SCREEN_HEIGHT, SCREEN_WIDTH, CV_8UC4),
     _colorMap(cv::ColormapTypes::COLORMAP_HSV)
 {
+    capture.open(0);
+    cv::namedWindow("Niki funkciója");
+
+    cv::createTrackbar("Alpha", "Niki funkciója", &alpha, 100);
+    cv::createTrackbar("Beta", "Niki funkciója", &beta, 100);
+
 }
 
 void FractalRenderer::setBlendMode(BlendMode blendMode)
@@ -85,7 +95,7 @@ void FractalRenderer::render()
 
         colorTime = colorPixels(fractalValues, _renderedImage);
 
-        morphTime = morphImage(_renderedImage);
+        //morphTime = morphImage(_renderedImage);
 
         if (_saveImage) {
             saveTime = saveImage(_renderedImage);
@@ -144,6 +154,8 @@ uint64_t FractalRenderer::colorPixels(cv::InputArray fractalValues, cv::InputOut
     pixelValues.convertTo(pixelValues, CV_8UC3, 255.0 / _fractal.getMaxN());
 
     mapGreyScaleImageToBGRA(pixelValues, _colorMap);
+
+    morphImage(pixelValues);
 
     if (_blendMode == NO_ALPHA) {
         renderedImage.assign(pixelValues);
@@ -214,7 +226,19 @@ uint64_t FractalRenderer::morphImage(cv::InputOutputArray image)
 {
     const auto start = std::chrono::high_resolution_clock::now();
 
-    // TODO
+    if (!image.empty()) {
+        
+
+        cv::Mat frame;
+        capture >> frame;
+
+        cv::Mat &imageMat = image.getMatRef();
+
+        cv::resize(frame, frame, cv::Size(image.cols(), image.rows()));
+        cv::cvtColor(frame, frame, cv::COLOR_BGR2BGRA);
+
+        cv::addWeighted(imageMat, alpha / 100.0, frame, beta / 100.0, 0, imageMat);
+    }
 
     const auto end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> diff = end - start;
